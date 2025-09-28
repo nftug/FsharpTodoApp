@@ -26,6 +26,7 @@
     <Compile Include="Features/Todo/ValueObjects/TodoDueDate.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoStatus.fs" />
     <Compile Include="Features/Todo/Entities/TodoEntity.fs" />
+    <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
   </ItemGroup>
 
   <ItemGroup>

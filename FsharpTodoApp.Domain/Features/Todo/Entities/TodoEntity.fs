@@ -1,6 +1,5 @@
 namespace FsharpTodoApp.Domain.Features.Todo.Entities
 
-open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Domain.Common.Entities
 
@@ -12,10 +11,9 @@ type TodoEntity =
       Status: TodoStatus }
 
 module TodoEntity =
-    open FsharpTodoApp.Domain.Features.Auth.Policies
     open FsToolkit.ErrorHandling
 
-    let create (ctx: AuditContext<OwnerOnlyActorPolicy>) title description dueDate =
+    let create ctx title description dueDate =
         result {
             let! validBase = EntityBase.create ctx
             let! validTitle = title |> TodoTitle.tryCreate
@@ -30,7 +28,7 @@ module TodoEntity =
                   Status = TodoStatus.start }
         }
 
-    let update (ctx: AuditContext<OwnerOnlyActorPolicy>) title description dueDate status this =
+    let update ctx title description dueDate status this =
         result {
             let! validBase = this.Base |> EntityBase.update ctx
             let! validTitle = title |> TodoTitle.tryCreate
@@ -46,7 +44,7 @@ module TodoEntity =
                   Status = validStatus }
         }
 
-    let delete (ctx: AuditContext<OwnerOnlyActorPolicy>) this =
+    let delete ctx this =
         result {
             let! validBase = this.Base |> EntityBase.delete ctx
             return { this with Base = validBase }
