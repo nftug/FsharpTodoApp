@@ -1,8 +1,10 @@
 namespace FsharpTodoApp.Domain.Features.Auth.Policies
 
 open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Common.Policies
+open FsharpTodoApp.Domain.Common.Entities
 
-type OwnerOnlyActorPolicy(actor: Actor, createdAudit: CreatedAudit option) =
+type OwnerOnlyActorPolicy(actor: Actor, entityBase: EntityBase option) =
     new(actor: Actor) = OwnerOnlyActorPolicy(actor, None)
 
     interface IActorPolicy with
@@ -12,12 +14,12 @@ type OwnerOnlyActorPolicy(actor: Actor, createdAudit: CreatedAudit option) =
 
         member _.CanUpdate =
             actor.IsAdmin
-            || createdAudit
-               |> Option.map (fun a -> actor.UserInfo = (CreatedAudit.value a).UserInfo)
+            || entityBase
+               |> Option.map (fun e -> actor.UserInfo = e.CreatedAudit.UserInfo)
                |> Option.defaultValue false
 
         member _.CanDelete =
             actor.IsAdmin
-            || createdAudit
-               |> Option.map (fun a -> actor.UserInfo = (CreatedAudit.value a).UserInfo)
+            || entityBase
+               |> Option.map (fun e -> actor.UserInfo = e.CreatedAudit.UserInfo)
                |> Option.defaultValue false

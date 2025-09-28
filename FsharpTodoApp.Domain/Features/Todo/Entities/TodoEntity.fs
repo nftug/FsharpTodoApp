@@ -2,6 +2,7 @@ namespace FsharpTodoApp.Domain.Features.Todo.Entities
 
 open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
+open FsharpTodoApp.Domain.Common.Entities
 
 type TodoEntity =
     { Base: EntityBase
@@ -11,14 +12,15 @@ type TodoEntity =
       Status: TodoStatus }
 
 module TodoEntity =
+    open FsharpTodoApp.Domain.Features.Auth.Policies
     open FsToolkit.ErrorHandling
 
-    let create actorPolicy dateTimeProvider title description dueDate =
+    let create (ctx: AuditContext<OwnerOnlyActorPolicy>) title description dueDate =
         result {
-            let! validBase = EntityBase.create actorPolicy dateTimeProvider
+            let! validBase = EntityBase.create ctx
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
-            let! validDueDate = dueDate |> TodoDueDate.tryCreate dateTimeProvider
+            let! validDueDate = dueDate |> TodoDueDate.tryCreate ctx
 
             return
                 { Base = validBase
@@ -28,12 +30,12 @@ module TodoEntity =
                   Status = TodoStatus.start }
         }
 
-    let update actorPolicy dateTimeProvider title description dueDate status this =
+    let update (ctx: AuditContext<OwnerOnlyActorPolicy>) title description dueDate status this =
         result {
-            let! validBase = this.Base |> EntityBase.update actorPolicy dateTimeProvider
+            let! validBase = this.Base |> EntityBase.update ctx
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
-            let! validDueDate = dueDate |> TodoDueDate.tryCreate dateTimeProvider
+            let! validDueDate = dueDate |> TodoDueDate.tryCreate ctx
             let! validStatus = this.Status |> TodoStatus.tryUpdate status
 
             return
@@ -44,8 +46,8 @@ module TodoEntity =
                   Status = validStatus }
         }
 
-    let delete actorPolicy dateTimeProvider this =
+    let delete (ctx: AuditContext<OwnerOnlyActorPolicy>) this =
         result {
-            let! validBase = this.Base |> EntityBase.delete actorPolicy dateTimeProvider
+            let! validBase = this.Base |> EntityBase.delete ctx
             return { this with Base = validBase }
         }
