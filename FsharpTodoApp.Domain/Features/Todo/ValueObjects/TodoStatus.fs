@@ -16,6 +16,6 @@ module TodoStatus =
         | c, n when c = n -> Ok(TodoStatus n)
         | TodoStatusEnum.Todo, TodoStatusEnum.InProgress -> Ok(TodoStatus newStatus)
         | TodoStatusEnum.InProgress, TodoStatusEnum.Done -> Ok(TodoStatus newStatus)
-        | _ -> Error(ValidationError "Invalid status transition.")
+        | _ -> Validation.error "Invalid status transition."
 
     let value (TodoStatus current) = current

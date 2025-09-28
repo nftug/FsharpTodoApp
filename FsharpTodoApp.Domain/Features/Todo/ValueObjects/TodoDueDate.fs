@@ -4,11 +4,11 @@ type TodoDueDate = private TodoDueDate of System.DateTime option
 
 module TodoDueDate =
     open FsharpTodoApp.Domain.Common.Errors
+    open FsharpTodoApp.Domain.Common.Services
 
-    let tryCreate date =
-        // 期限日は過去日を許容しない
+    let tryCreate (dateTimeProvider: IDateTimeProvider) date =
         match date with
-        | Some d when d < System.DateTime.UtcNow.Date -> Error(ValidationError "Due date cannot be in the past.")
+        | Some d when d < dateTimeProvider.UtcNow -> Validation.error "Due date cannot be in the past."
         | _ -> Ok(TodoDueDate date)
 
     let recreate date = TodoDueDate date

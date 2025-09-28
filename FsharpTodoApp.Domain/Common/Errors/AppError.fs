@@ -6,8 +6,10 @@ type AppError =
     | ForbiddenError
     | UnauthorizedError
 
-module AppError =
-    let validationError msg = Error(ValidationError msg)
-    let notFoundError = Error NotFoundError
-    let forbiddenError = Error ForbiddenError
-    let unauthorizedError = Error UnauthorizedError
+module Validation =
+    /// Create a validation error Result<'a, AppError> with the given message
+    let error msg = Error(ValidationError msg)
+
+    /// Create a validation error using sprintf-style formatting
+    let errorf fmt =
+        Printf.ksprintf (fun s -> Error(ValidationError s)) fmt

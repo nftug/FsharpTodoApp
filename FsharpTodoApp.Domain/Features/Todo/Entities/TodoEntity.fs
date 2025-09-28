@@ -18,7 +18,7 @@ module TodoEntity =
             let! validBase = EntityBase.create actorPolicy dateTimeProvider
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
-            let! validDueDate = dueDate |> TodoDueDate.tryCreate
+            let! validDueDate = dueDate |> TodoDueDate.tryCreate dateTimeProvider
 
             return
                 { Base = validBase
@@ -33,7 +33,7 @@ module TodoEntity =
             let! validBase = this.Base |> EntityBase.update actorPolicy dateTimeProvider
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
-            let! validDueDate = dueDate |> TodoDueDate.tryCreate
+            let! validDueDate = dueDate |> TodoDueDate.tryCreate dateTimeProvider
             let! validStatus = this.Status |> TodoStatus.tryUpdate status
 
             return

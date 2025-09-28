@@ -9,9 +9,8 @@ module TodoDescription =
 
     let tryCreate (text: string option) =
         match text with
-        | Some t when t.Length > maxLen ->
-            Error(ValidationError(sprintf "Description cannot be longer than %d characters." maxLen))
-        | t -> Ok(TodoDescription t)
+        | Some s when s.Length > maxLen -> Validation.errorf "Description cannot be longer than %d characters." maxLen
+        | v -> Ok(TodoDescription v)
 
     let recreate text = TodoDescription text
 
