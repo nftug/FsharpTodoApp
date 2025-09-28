@@ -12,6 +12,10 @@
     <Compile Include="Common/ValueObjects/UserInfo.fs" />
     <Compile Include="Common/ValueObjects/Actor.fs" />
     <Compile Include="Common/ValueObjects/EntityAudit.fs" />
+
+    <Compile Include="Features/Auth/Policies/IActorPolicy.fs" />
+    <Compile Include="Features/Auth/Policies/OwnerOnlyActorPolicy.fs" />
+
     <Compile Include="Common/ValueObjects/EntityBase.fs" />
 
     <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />

@@ -2,7 +2,6 @@ namespace FsharpTodoApp.Domain.Features.Todo.Entities
 
 open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
-open FsToolkit.ErrorHandling
 
 type TodoEntity =
     { Base: EntityBase
@@ -12,35 +11,41 @@ type TodoEntity =
       Status: TodoStatus }
 
 module TodoEntity =
-    let create actor dateTimeProvider title description dueDate =
+    open FsToolkit.ErrorHandling
+
+    let create actorPolicy dateTimeProvider title description dueDate =
         result {
+            let! validBase = EntityBase.create actorPolicy dateTimeProvider
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
             let! validDueDate = dueDate |> TodoDueDate.tryCreate
 
             return
-                { Base = EntityBase.create actor dateTimeProvider
+                { Base = validBase
                   Title = validTitle
                   Description = validDescription
                   DueDate = validDueDate
                   Status = TodoStatus.start }
         }
 
-    let update actor dateTimeProvider title description dueDate status this =
+    let update actorPolicy dateTimeProvider title description dueDate status this =
         result {
+            let! validBase = this.Base |> EntityBase.update actorPolicy dateTimeProvider
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
             let! validDueDate = dueDate |> TodoDueDate.tryCreate
             let! validStatus = this.Status |> TodoStatus.tryUpdate status
 
             return
-                { Base = this.Base |> EntityBase.update actor dateTimeProvider
+                { Base = validBase
                   Title = validTitle
                   Description = validDescription
                   DueDate = validDueDate
                   Status = validStatus }
         }
 
-    let delete actor dateTimeProvider this =
-        { this with
-            Base = this.Base |> EntityBase.delete actor dateTimeProvider }
+    let delete actorPolicy dateTimeProvider this =
+        result {
+            let! validBase = this.Base |> EntityBase.delete actorPolicy dateTimeProvider
+            return { this with Base = validBase }
+        }
