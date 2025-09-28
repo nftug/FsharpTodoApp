@@ -5,6 +5,8 @@ open FsharpTodoApp.Domain.Features.Todo.Enums
 type TodoStatus = private TodoStatus of TodoStatusEnum
 
 module TodoStatus =
+    open FsharpTodoApp.Domain.Common.Errors
+
     let start = TodoStatus TodoStatusEnum.Todo
 
     let recreate status = TodoStatus status
@@ -14,6 +16,6 @@ module TodoStatus =
         | c, n when c = n -> Ok(TodoStatus n)
         | TodoStatusEnum.Todo, TodoStatusEnum.InProgress -> Ok(TodoStatus newStatus)
         | TodoStatusEnum.InProgress, TodoStatusEnum.Done -> Ok(TodoStatus newStatus)
-        | _ -> Error "Invalid status transition."
+        | _ -> Error(ValidationError "Invalid status transition.")
 
     let value (TodoStatus current) = current

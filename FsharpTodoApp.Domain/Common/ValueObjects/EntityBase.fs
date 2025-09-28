@@ -8,6 +8,7 @@ type EntityBase =
 
 module EntityBase =
     open FsharpTodoApp.Domain.Features.Auth.Policies
+    open FsharpTodoApp.Domain.Common.Errors
 
     let create (actorPolicy: IActorPolicy) dateTimeProvider =
         match actorPolicy.CanCreate with
@@ -17,7 +18,7 @@ module EntityBase =
                   CreatedAudit = CreatedAudit.create actorPolicy.Actor dateTimeProvider
                   UpdatedAudit = UpdatedAudit.none
                   DeletedAudit = DeletedAudit.none }
-        | false -> Error "Actor does not have permission to create entity."
+        | false -> Error ForbiddenError
 
     let update (actorPolicy: IActorPolicy) dateTimeProvider this =
         match actorPolicy.CanUpdate with
@@ -25,7 +26,7 @@ module EntityBase =
             Ok
                 { this with
                     UpdatedAudit = UpdatedAudit.create actorPolicy.Actor dateTimeProvider }
-        | false -> Error "Actor does not have permission to update entity."
+        | false -> Error ForbiddenError
 
     let delete (actorPolicy: IActorPolicy) dateTimeProvider this =
         match actorPolicy.CanDelete with
@@ -33,4 +34,4 @@ module EntityBase =
             Ok
                 { this with
                     DeletedAudit = DeletedAudit.create actorPolicy.Actor dateTimeProvider }
-        | false -> Error "Actor does not have permission to delete entity."
+        | false -> Error ForbiddenError
