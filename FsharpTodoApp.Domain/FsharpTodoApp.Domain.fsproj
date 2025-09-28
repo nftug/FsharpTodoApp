@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Common/Services/DateTimeProvider.fs" />
+
+    <Compile Include="Common/ValueObjects/EntityIdSet.fs" />
+    <Compile Include="Common/ValueObjects/UserInfo.fs" />
+    <Compile Include="Common/ValueObjects/Actor.fs" />
+    <Compile Include="Common/ValueObjects/EntityAudit.fs" />
+    <Compile Include="Common/ValueObjects/EntityBase.fs" />
+
+    <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
+    <Compile Include="Features/Todo/ValueObjects/TodoTitle.fs" />
+    <Compile Include="Features/Todo/ValueObjects/TodoDescription.fs" />
+    <Compile Include="Features/Todo/ValueObjects/TodoDueDate.fs" />
+    <Compile Include="Features/Todo/ValueObjects/TodoStatus.fs" />
+    <Compile Include="Features/Todo/Entities/TodoEntity.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="5.1.0" />
+  </ItemGroup>
+
+</Project>
