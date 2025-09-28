@@ -8,9 +8,8 @@ module TodoDescription =
     let tryCreate (text: string option) =
         match text with
         | Some t when t.Length > maxLen -> Error(sprintf "Description cannot be longer than %d characters." maxLen)
-        | Some v -> Ok(TodoDescription(Some v))
-        | None -> Ok(TodoDescription None)
+        | t -> Ok(TodoDescription t)
 
-    let recreate (text: string option) = TodoDescription text
+    let recreate text = TodoDescription text
 
-    let value (TodoDescription text) = text
+    let value (TodoDescription current) = current
