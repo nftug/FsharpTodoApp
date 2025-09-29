@@ -10,13 +10,17 @@ type TodoPolicyService(dateTimeProvider: IDateTimeProvider) =
         { Policy = OwnerOnlyActorPolicy(actor, entity)
           DateTimeProvider = dateTimeProvider }
 
-    member this.BuildNewEntity actor title description dueDate =
+    member this.BuildNewEntity actor title description dueDate reviewer =
         let ctx = this.NewCtx actor None
-        TodoEntity.create ctx title description dueDate
+        TodoEntity.create ctx title description dueDate reviewer
 
     member this.BuildUpdatedEntity actor title description dueDate status entity =
         let ctx = this.NewCtx actor (Some entity.Base)
         entity |> TodoEntity.update ctx title description dueDate status
+
+    member this.BuildUpdatedStatus actor newStatus entity =
+        let ctx = this.NewCtx actor (Some entity.Base)
+        entity |> TodoEntity.updateStatus ctx newStatus
 
     member this.BuildDeletedEntity actor entity =
         let ctx = this.NewCtx actor (Some entity.Base)

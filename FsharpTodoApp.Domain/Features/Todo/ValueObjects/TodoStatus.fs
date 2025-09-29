@@ -2,20 +2,47 @@ namespace FsharpTodoApp.Domain.Features.Todo.ValueObjects
 
 open FsharpTodoApp.Domain.Features.Todo.Enums
 
-type TodoStatus = private TodoStatus of TodoStatusEnum
+type TodoStatusValue =
+    | Todo
+    | InProgress
+    | Done
+
+type TodoStatus = private TodoStatus of TodoStatusValue
 
 module TodoStatus =
     open FsharpTodoApp.Domain.Common.Errors
 
-    let start = TodoStatus TodoStatusEnum.Todo
+    let private fromEnum =
+        function
+        | TodoStatusEnum.Todo -> Todo
+        | TodoStatusEnum.InProgress -> InProgress
+        | TodoStatusEnum.Done -> Done
+        | unknown -> invalidArg "status" (sprintf "Unknown TodoStatusEnum value: %A" unknown)
 
-    let recreate status = TodoStatus status
+    let private toEnum =
+        function
+        | Todo -> TodoStatusEnum.Todo
+        | InProgress -> TodoStatusEnum.InProgress
+        | Done -> TodoStatusEnum.Done
 
-    let tryUpdate newStatus (TodoStatus current) =
-        match current, newStatus with
-        | c, n when c = n -> Ok(TodoStatus n)
-        | TodoStatusEnum.Todo, TodoStatusEnum.InProgress -> Ok(TodoStatus newStatus)
-        | TodoStatusEnum.InProgress, TodoStatusEnum.Done -> Ok(TodoStatus newStatus)
-        | _ -> Validation.error "Invalid status transition."
+    let getNeighbor =
+        function
+        | Todo -> None, Some InProgress
+        | InProgress -> Some Todo, Some Done
+        | Done -> Some InProgress, None
 
-    let value (TodoStatus current) = current
+    let start = TodoStatus Todo
+
+    let tryUpdate ctx reviewer newStatusEnum (TodoStatus currentStatus) =
+        let newStatus = newStatusEnum |> fromEnum
+
+        match currentStatus, newStatus, (ctx, reviewer) with
+        | c, n, TodoReviewer.CannotReview when c = Done || n = Done ->
+            Validation.error "Only admin or the reviewer can change the status to/from Done."
+        | _, n, _ -> Ok(TodoStatus n)
+
+    let value (TodoStatus status) = status
+
+    let enumValue (TodoStatus status) = status |> toEnum
+
+    let recreate status = status |> fromEnum |> TodoStatus
