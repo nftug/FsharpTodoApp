@@ -10,6 +10,10 @@ type OwnerOnlyActorPolicy(actor: Actor, entityBase: EntityBase) =
 
         member _.CanCreate = true
 
-        member _.CanUpdate = actor.IsAdmin || actor.UserInfo = entityBase.CreatedAudit.UserInfo
+        member _.CanUpdate =
+            actor |> Actor.isAtLeast Admin
+            || actor.UserInfo = entityBase.CreatedAudit.UserInfo
 
-        member _.CanDelete = actor.IsAdmin || actor.UserInfo = entityBase.CreatedAudit.UserInfo
+        member _.CanDelete =
+            actor |> Actor.isAtLeast Admin
+            || actor.UserInfo = entityBase.CreatedAudit.UserInfo

@@ -12,7 +12,7 @@ module TodoAssignee =
     let (|AssignAllowed|AssignBlocked|) (actor, assignee) =
         match value assignee with
         | None -> AssignAllowed
-        | Some assignee when actor.IsAdmin || actor.UserInfo = assignee -> AssignAllowed
+        | Some assignee when actor |> Actor.isAtLeast Manager || actor.UserInfo = assignee -> AssignAllowed
         | _ -> AssignBlocked
 
     let tryAssign ctx newAssignee =

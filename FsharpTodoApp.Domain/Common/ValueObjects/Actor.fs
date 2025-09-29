@@ -3,4 +3,7 @@ namespace FsharpTodoApp.Domain.Common.ValueObjects
 type Actor =
     { UserInfo: UserInfo
       UserDbId: int64
-      IsAdmin: bool }
+      Role: ActorRole }
+
+module Actor =
+    let isAtLeast role actor = actor.Role |> ActorRole.isAtLeast role

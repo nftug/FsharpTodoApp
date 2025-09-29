@@ -12,7 +12,7 @@ module TodoReviewer =
     let (|ReviewAllowed|ReviewBlocked|) (actor, reviewer) =
         match value reviewer with
         | None -> ReviewAllowed
-        | Some reviewerInfo when actor.IsAdmin || actor.UserInfo = reviewerInfo -> ReviewAllowed
+        | Some reviewerInfo when actor |> Actor.isAtLeast Manager || actor.UserInfo = reviewerInfo -> ReviewAllowed
         | _ -> ReviewBlocked
 
     let tryAssign ctx newReviewer =
