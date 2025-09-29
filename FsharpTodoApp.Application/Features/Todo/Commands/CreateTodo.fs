@@ -17,23 +17,17 @@ module CreateTodo =
     let handle deps (actor, command) =
         asyncResult {
             let! assignee =
-                match command.AssigneeUserName with
-                | Some userName ->
-                    deps.UserRef.GetByUserName userName
-                    |> AsyncResult.fromOption (ValidationError "Could not find assignee user")
-                    |> AsyncResult.map Some
-                | None -> asyncResult { return None }
+                deps.UserRef.GetByUserName
+                |> AsyncResult.maybeFetchAsync (ValidationError "Could not find assignee user")
+                <| command.AssigneeUserName
 
             let! reviewer =
-                match command.ReviewerUserName with
-                | Some userName ->
-                    deps.UserRef.GetByUserName userName
-                    |> AsyncResult.fromOption (ValidationError "Could not find reviewer user")
-                    |> AsyncResult.map Some
-                | None -> asyncResult { return None }
+                deps.UserRef.GetByUserName
+                |> AsyncResult.maybeFetchAsync (ValidationError "Could not find reviewer user")
+                <| command.ReviewerUserName
 
             let! entity =
-                TodoPolicyService.buildNewEntity
+                TodoPolicyService.buildCreated
                     deps.PolicyDeps
                     actor
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
