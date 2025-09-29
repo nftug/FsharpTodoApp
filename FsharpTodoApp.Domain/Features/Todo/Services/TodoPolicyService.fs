@@ -2,26 +2,25 @@ namespace FsharpTodoApp.Domain.Features.Todo.Services
 
 open FsharpTodoApp.Domain.Common.Services
 open FsharpTodoApp.Domain.Common.ValueObjects
-open FsharpTodoApp.Domain.Features.Auth.Policies
 open FsharpTodoApp.Domain.Features.Todo.Entities
+open FsharpTodoApp.Domain.Features.Todo.Policies
 
-type TodoPolicyService(dateTimeProvider: IDateTimeProvider) =
-    member private _.NewCtx actor entity =
-        { Policy = OwnerOnlyActorPolicy(actor, entity)
-          DateTimeProvider = dateTimeProvider }
+type TodoPolicyService(dtProvider: IDateTimeProvider) =
+    member _.BuildNewEntity actor title description dueDate assignee reviewer =
+        let ctx = TodoCreationPolicy actor |> AuditContext.create dtProvider
+        TodoEntity.create ctx title description dueDate assignee reviewer
 
-    member this.BuildNewEntity actor title description dueDate reviewer =
-        let ctx = this.NewCtx actor None
-        TodoEntity.create ctx title description dueDate reviewer
+    member _.BuildUpdatedEntity actor title description dueDate assignee reviewer entity =
+        let ctx = TodoUpdatePolicy(actor, entity) |> AuditContext.create dtProvider
+        entity |> TodoEntity.update ctx title description dueDate assignee reviewer
 
-    member this.BuildUpdatedEntity actor title description dueDate status entity =
-        let ctx = this.NewCtx actor (Some entity.Base)
-        entity |> TodoEntity.update ctx title description dueDate status
+    member _.BuildUpdatedStatus actor newStatus entity =
+        let ctx =
+            TodoUpdateStatusPolicy(actor, entity, newStatus)
+            |> AuditContext.create dtProvider
 
-    member this.BuildUpdatedStatus actor newStatus entity =
-        let ctx = this.NewCtx actor (Some entity.Base)
         entity |> TodoEntity.updateStatus ctx newStatus
 
-    member this.BuildDeletedEntity actor entity =
-        let ctx = this.NewCtx actor (Some entity.Base)
+    member _.BuildDeletedEntity actor entity =
+        let ctx = TodoDeletionPolicy(actor, entity) |> AuditContext.create dtProvider
         entity |> TodoEntity.delete ctx

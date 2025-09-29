@@ -6,5 +6,5 @@ type EntityAudit =
 
 module EntityAudit =
     let create ctx =
-        { UserInfo = ctx.Policy.Actor.UserInfo
+        { UserInfo = ctx.Actor.UserInfo
           Timestamp = ctx.DateTimeProvider.UtcNow }

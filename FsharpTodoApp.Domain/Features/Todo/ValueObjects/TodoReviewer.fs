@@ -9,15 +9,15 @@ module TodoReviewer =
 
     let value (TodoReviewer reviewer) = reviewer
 
-    let (|CanReview|CannotReview|) (ctx, reviewer) =
+    let (|ReviewAllowed|ReviewBlocked|) (actor, reviewer) =
         match value reviewer with
-        | None -> CanReview
-        | Some reviewerInfo when ctx.Policy.Actor.IsAdmin || ctx.Policy.Actor.UserInfo = reviewerInfo -> CanReview
-        | _ -> CannotReview
+        | None -> ReviewAllowed
+        | Some reviewerInfo when actor.IsAdmin || actor.UserInfo = reviewerInfo -> ReviewAllowed
+        | _ -> ReviewBlocked
 
     let tryAssign ctx newReviewer =
-        match ctx, TodoReviewer newReviewer with
-        | CanReview -> Ok(TodoReviewer newReviewer)
-        | CannotReview -> Validation.error "Only admin can assign other users."
+        match ctx.Actor, TodoReviewer newReviewer with
+        | ReviewAllowed -> Ok(TodoReviewer newReviewer)
+        | ReviewBlocked -> Validation.error "Only admin can assign other users."
 
     let recreate reviewer = TodoReviewer reviewer

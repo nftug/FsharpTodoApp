@@ -11,15 +11,16 @@ type TodoStatus = private TodoStatus of TodoStatusValue
 
 module TodoStatus =
     open FsharpTodoApp.Domain.Common.Errors
+    open FsharpTodoApp.Domain.Common.ValueObjects
 
-    let private fromEnum =
+    let fromEnum =
         function
         | TodoStatusEnum.Todo -> Todo
         | TodoStatusEnum.InProgress -> InProgress
         | TodoStatusEnum.Done -> Done
         | unknown -> invalidArg "status" (sprintf "Unknown TodoStatusEnum value: %A" unknown)
 
-    let private toEnum =
+    let toEnum =
         function
         | Todo -> TodoStatusEnum.Todo
         | InProgress -> TodoStatusEnum.InProgress
@@ -31,18 +32,13 @@ module TodoStatus =
         | InProgress -> Some Todo, Some Done
         | Done -> Some InProgress, None
 
-    let start = TodoStatus Todo
+    let defaultStatus = TodoStatus Todo
 
-    let tryUpdate ctx reviewer newStatusEnum (TodoStatus currentStatus) =
-        let newStatus = newStatusEnum |> fromEnum
-
-        match currentStatus, newStatus, (ctx, reviewer) with
-        | c, n, TodoReviewer.CannotReview when c = Done || n = Done ->
-            Validation.error "Only admin or the reviewer can change the status to/from Done."
-        | _, n, _ -> Ok(TodoStatus n)
+    let tryUpdate ctx newStatus =
+        match ctx.Policy.CanUpdate with
+        | true -> Ok(TodoStatus newStatus)
+        | false -> Validation.error "Cannot update status due to policy."
 
     let value (TodoStatus status) = status
-
-    let enumValue (TodoStatus status) = status |> toEnum
 
     let recreate status = status |> fromEnum |> TodoStatus

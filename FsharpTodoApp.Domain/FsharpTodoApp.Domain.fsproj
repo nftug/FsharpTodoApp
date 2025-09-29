@@ -18,6 +18,7 @@
     <Compile Include="Common/ValueObjects/EntityAudit.fs" />
     <Compile Include="Common/Entities/EntityBase.fs" />
 
+    <Compile Include="Features/Auth/Policies/PassThroughActorPolicy.fs" />
     <Compile Include="Features/Auth/Policies/OwnerOnlyActorPolicy.fs" />
 
     <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
@@ -26,7 +27,9 @@
     <Compile Include="Features/Todo/ValueObjects/TodoDueDate.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoReviewer.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoStatus.fs" />
+    <Compile Include="Features/Todo/ValueObjects/TodoAssignee.fs" />
     <Compile Include="Features/Todo/Entities/TodoEntity.fs" />
+    <Compile Include="Features/Todo/Policies/TodoPolicies.fs" />
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
   </ItemGroup>
 
