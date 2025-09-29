@@ -7,6 +7,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsharpTodoApp.Presentation"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsharpTodoApp.Domain", "FsharpTodoApp.Domain\FsharpTodoApp.Domain.fsproj", "{279EFC5A-4E62-45BF-AA5B-F3F4FCDCDDBA}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsharpTodoApp.Application", "FsharpTodoApp.Application\FsharpTodoApp.Application.fsproj", "{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{279EFC5A-4E62-45BF-AA5B-F3F4FCDCDDBA}.Release|x64.Build.0 = Release|Any CPU
 		{279EFC5A-4E62-45BF-AA5B-F3F4FCDCDDBA}.Release|x86.ActiveCfg = Release|Any CPU
 		{279EFC5A-4E62-45BF-AA5B-F3F4FCDCDDBA}.Release|x86.Build.0 = Release|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Debug|x64.Build.0 = Debug|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Debug|x86.Build.0 = Debug|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Release|x64.ActiveCfg = Release|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Release|x64.Build.0 = Release|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Release|x86.ActiveCfg = Release|Any CPU
+		{6795CE4A-C7A2-43E8-8F06-4B5917DAA203}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

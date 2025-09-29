@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FsharpTodoApp.Domain\FsharpTodoApp.Domain.fsproj" />
+    <ProjectReference Include="..\FsharpTodoApp.Application\FsharpTodoApp.Application.fsproj" />
   </ItemGroup>
 
 </Project>
