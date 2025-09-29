@@ -22,6 +22,8 @@
     <Compile Include="Features/Auth/Policies/PassThroughActorPolicy.fs" />
     <Compile Include="Features/Auth/Policies/OwnerOnlyActorPolicy.fs" />
 
+    <Compile Include="Features/User/Interfaces/IUserReferenceService.fs" />
+
     <Compile Include="Features/Todo/ValueObjects/TodoTitle.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoDescription.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoDueDate.fs" />
@@ -31,6 +33,7 @@
     <Compile Include="Features/Todo/Entities/TodoEntity.fs" />
     <Compile Include="Features/Todo/Policies/TodoPolicies.fs" />
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
+    <Compile Include="Features/Todo/Interfaces/ITodoRepository.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,7 +15,7 @@ type TodoEntity =
 module TodoEntity =
     open FsToolkit.ErrorHandling
 
-    let create ctx title description dueDate assignee reviewer =
+    let create ctx (title, description, dueDate, assignee, reviewer) =
         result {
             let! validBase = EntityBase.create ctx
             let! validTitle = title |> TodoTitle.tryCreate
@@ -34,7 +34,7 @@ module TodoEntity =
                   Reviewer = validReviewer }
         }
 
-    let update ctx title description dueDate assignee reviewer this =
+    let update ctx (title, description, dueDate, assignee, reviewer) this =
         result {
             let! validBase = this.Base |> EntityBase.update ctx
             let! validTitle = title |> TodoTitle.tryCreate

@@ -1,26 +1,33 @@
 namespace FsharpTodoApp.Domain.Features.Todo.Services
 
-open FsharpTodoApp.Domain.Common.Services
-open FsharpTodoApp.Domain.Common.ValueObjects
-open FsharpTodoApp.Domain.Features.Todo.Entities
-open FsharpTodoApp.Domain.Features.Todo.Policies
+module TodoPolicyService =
+    open FsharpTodoApp.Domain.Common.Services
+    open FsharpTodoApp.Domain.Common.ValueObjects
+    open FsharpTodoApp.Domain.Features.Todo.Entities
+    open FsharpTodoApp.Domain.Features.Todo.Policies
 
-type TodoPolicyService(dtProvider: IDateTimeProvider) =
-    member _.BuildNewEntity actor title description dueDate assignee reviewer =
-        let ctx = TodoCreationPolicy actor |> AuditContext.create dtProvider
-        TodoEntity.create ctx title description dueDate assignee reviewer
+    type Dependencies = { DateTimeProvider: IDateTimeProvider }
 
-    member _.BuildUpdatedEntity actor title description dueDate assignee reviewer entity =
-        let ctx = TodoUpdatePolicy(actor, entity) |> AuditContext.create dtProvider
-        entity |> TodoEntity.update ctx title description dueDate assignee reviewer
+    let buildNewEntity deps actor (title, description, dueDate, assignee, reviewer) =
+        let ctx = TodoCreationPolicy actor |> AuditContext.create deps.DateTimeProvider
+        TodoEntity.create ctx (title, description, dueDate, assignee, reviewer)
 
-    member _.BuildUpdatedStatus actor newStatus entity =
+    let buildUpdatedEntity deps actor (title, description, dueDate, assignee, reviewer) entity =
+        let ctx =
+            TodoUpdatePolicy(actor, entity) |> AuditContext.create deps.DateTimeProvider
+
+        entity
+        |> TodoEntity.update ctx (title, description, dueDate, assignee, reviewer)
+
+    let buildUpdatedStatus deps actor newStatus entity =
         let ctx =
             TodoUpdateStatusPolicy(actor, entity, newStatus)
-            |> AuditContext.create dtProvider
+            |> AuditContext.create deps.DateTimeProvider
 
         entity |> TodoEntity.updateStatus ctx newStatus
 
-    member _.BuildDeletedEntity actor entity =
-        let ctx = TodoDeletionPolicy(actor, entity) |> AuditContext.create dtProvider
+    let buildDeletedEntity deps actor entity =
+        let ctx =
+            TodoDeletionPolicy(actor, entity) |> AuditContext.create deps.DateTimeProvider
+
         entity |> TodoEntity.delete ctx
