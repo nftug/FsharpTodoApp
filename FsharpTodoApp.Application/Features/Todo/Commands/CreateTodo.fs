@@ -2,6 +2,7 @@ namespace FsharpTodoApp.Application.Features.Todo.Commands
 
 module CreateTodo =
     open FsharpTodoApp.Application.Common.Utils
+    open FsharpTodoApp.Application.Common.Dtos
     open FsharpTodoApp.Application.Features.Todo.Dtos.Commands
     open FsharpTodoApp.Domain.Common.Errors
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
@@ -32,5 +33,7 @@ module CreateTodo =
                     actor
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
 
-            do! deps.Repository.Save(actor, entity) |> Async.Ignore
+            return!
+                deps.Repository.Save(actor, entity)
+                |> Async.map (fun x -> { ItemId = x.Base.IdSet.PublicId })
         }

@@ -12,7 +12,7 @@ module AsyncResult =
             | None -> return! Error error
         }
 
-    let maybeFetchAsync error fetchAsync =
-        function
+    let maybeFetchAsync error fetchAsync optionParam =
+        match optionParam with
         | Some param -> fetchAsync param |> requireSomeAsync error |> AsyncResult.map Some
         | None -> asyncResult { return None }
