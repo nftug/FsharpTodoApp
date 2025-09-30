@@ -6,15 +6,14 @@ module TodoPolicyService =
     open FsharpTodoApp.Domain.Features.Todo.Entities
     open FsharpTodoApp.Domain.Features.Todo.Policies
 
-    type Dependencies = { DateTimeProvider: IDateTimeProvider }
+    type Dependencies = { DateTime: IDateTimeProvider }
 
     let buildCreated deps actor (title, description, dueDate, assignee, reviewer) =
-        let ctx = TodoCreationPolicy actor |> AuditContext.create deps.DateTimeProvider
+        let ctx = TodoCreationPolicy actor |> AuditContext.create deps.DateTime
         TodoEntity.create ctx (title, description, dueDate, assignee, reviewer)
 
     let buildUpdated deps actor (title, description, dueDate, assignee, reviewer) entity =
-        let ctx =
-            TodoUpdatePolicy(actor, entity) |> AuditContext.create deps.DateTimeProvider
+        let ctx = TodoUpdatePolicy(actor, entity) |> AuditContext.create deps.DateTime
 
         entity
         |> TodoEntity.update ctx (title, description, dueDate, assignee, reviewer)
@@ -22,12 +21,11 @@ module TodoPolicyService =
     let buildStatusUpdated deps actor newStatus entity =
         let ctx =
             TodoUpdateStatusPolicy(actor, entity, newStatus)
-            |> AuditContext.create deps.DateTimeProvider
+            |> AuditContext.create deps.DateTime
 
         entity |> TodoEntity.updateStatus ctx newStatus
 
     let buildDeleted deps actor entity =
-        let ctx =
-            TodoDeletionPolicy(actor, entity) |> AuditContext.create deps.DateTimeProvider
+        let ctx = TodoDeletionPolicy(actor, entity) |> AuditContext.create deps.DateTime
 
         entity |> TodoEntity.delete ctx

@@ -6,10 +6,10 @@ open FsharpTodoApp.Domain.Common.Policies
 type AuditContext<'T when 'T :> IActorPolicy> =
     { Policy: 'T
       Actor: Actor
-      DateTimeProvider: IDateTimeProvider }
+      DateTime: IDateTimeProvider }
 
 module AuditContext =
     let create dateTimeProvider actorPolicy =
         { Policy = actorPolicy
           Actor = actorPolicy.Actor
-          DateTimeProvider = dateTimeProvider }
+          DateTime = dateTimeProvider }

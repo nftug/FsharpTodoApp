@@ -6,10 +6,10 @@ module TodoDueDate =
     open FsharpTodoApp.Domain.Common.Errors
     open FsharpTodoApp.Domain.Common.ValueObjects
 
-    let tryCreate ctx =
-        function
-        | Some d when d < ctx.DateTimeProvider.UtcNow -> Validation.error "Due date cannot be in the past."
-        | d -> Ok(TodoDueDate d)
+    let tryCreate ctx datetime =
+        match datetime with
+        | Some dt when dt < ctx.DateTime.UtcNow -> Validation.error "Due date cannot be in the past."
+        | dt -> Ok(TodoDueDate dt)
 
     let recreate date = TodoDueDate date
 
