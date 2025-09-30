@@ -36,3 +36,31 @@ module EntityBase =
                 { this with
                     DeletedAudit = Some(EntityAudit.create ctx) }
         | false -> Error ForbiddenError
+
+    let isNew this = this.IdSet.DbId = 0L
+
+    let isDeleted this = this.DeletedAudit.IsSome
+
+    let setDbId dbId this =
+        { this with
+            IdSet = { this.IdSet with DbId = dbId } }
+
+    let recreate (dbId, publicId) (createdAt, createdBy) (updatedAt, updatedBy) (deletedAt, deletedBy) =
+        { IdSet = { DbId = dbId; PublicId = publicId }
+          CreatedAudit =
+            { UserInfo = { UserName = createdBy }
+              Timestamp = createdAt }
+          UpdatedAudit =
+            match updatedAt, updatedBy with
+            | Some ts, Some user ->
+                Some
+                    { UserInfo = { UserName = user }
+                      Timestamp = ts }
+            | _ -> None
+          DeletedAudit =
+            match deletedAt, deletedBy with
+            | Some ts, Some user ->
+                Some
+                    { UserInfo = { UserName = user }
+                      Timestamp = ts }
+            | _ -> None }

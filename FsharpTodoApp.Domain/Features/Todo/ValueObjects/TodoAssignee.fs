@@ -32,4 +32,5 @@ module TodoAssignee =
         | AssigneeBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
         | _ -> Ok(TodoAssignee newAssignee)
 
-    let recreate assignee = TodoAssignee assignee
+    let recreate assigneeName =
+        TodoAssignee(assigneeName |> Option.map (fun x -> { UserInfo.UserName = x }))

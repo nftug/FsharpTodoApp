@@ -4,5 +4,5 @@ open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Features.Todo.Entities
 
 type ITodoRepository =
-    abstract member GetById: Actor option * System.Guid -> Async<TodoEntity option>
-    abstract member Save: Actor * TodoEntity -> Async<TodoEntity>
+    abstract member GetByIdAsync: Actor option * System.Guid -> Async<TodoEntity option>
+    abstract member SaveAsync: Actor * TodoEntity -> Async<TodoEntity>

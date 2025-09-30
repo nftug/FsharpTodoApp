@@ -14,19 +14,19 @@ module UpdateTodo =
           UserRef: IUserReferenceService
           PolicyDeps: TodoPolicyService.Dependencies }
 
-    let handle deps (actor, id, command) =
+    let handleAsync deps (actor, id, command) =
         asyncResult {
             let! entity =
-                deps.Repository.GetById(Some actor, id)
+                deps.Repository.GetByIdAsync(Some actor, id)
                 |> AsyncResult.requireSomeAsync NotFoundError
 
             let! assignee =
-                deps.UserRef.GetByUserName
+                deps.UserRef.GetByUserNameAsync
                 |> AsyncResult.maybeFetchAsync (ValidationError "Could not find assignee user")
                 <| command.AssigneeUserName
 
             let! reviewer =
-                deps.UserRef.GetByUserName
+                deps.UserRef.GetByUserNameAsync
                 |> AsyncResult.maybeFetchAsync (ValidationError "Could not find reviewer user")
                 <| command.ReviewerUserName
 
@@ -37,5 +37,5 @@ module UpdateTodo =
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
                     entity
 
-            do! deps.Repository.Save(actor, updated) |> Async.Ignore
+            do! deps.Repository.SaveAsync(actor, updated) |> Async.Ignore
         }

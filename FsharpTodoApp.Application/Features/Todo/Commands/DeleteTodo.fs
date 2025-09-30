@@ -11,13 +11,13 @@ module DeleteTodo =
         { Repository: ITodoRepository
           PolicyDeps: TodoPolicyService.Dependencies }
 
-    let handle deps (actor, id) =
+    let handleAsync deps (actor, id) =
         asyncResult {
             let! entity =
-                deps.Repository.GetById(Some actor, id)
+                deps.Repository.GetByIdAsync(Some actor, id)
                 |> AsyncResult.requireSomeAsync NotFoundError
 
             let! updated = entity |> TodoPolicyService.buildDeleted deps.PolicyDeps actor
 
-            do! deps.Repository.Save(actor, updated) |> Async.Ignore
+            do! deps.Repository.SaveAsync(actor, updated) |> Async.Ignore
         }

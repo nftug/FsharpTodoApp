@@ -32,4 +32,5 @@ module TodoReviewer =
         | ReviewerBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
         | _ -> Ok(TodoReviewer newReviewer)
 
-    let recreate reviewer = TodoReviewer reviewer
+    let recreate reviewerName =
+        TodoReviewer(reviewerName |> Option.map (fun x -> { UserInfo.UserName = x }))

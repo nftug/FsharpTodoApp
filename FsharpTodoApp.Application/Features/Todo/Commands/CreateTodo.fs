@@ -15,15 +15,15 @@ module CreateTodo =
           UserRef: IUserReferenceService
           PolicyDeps: TodoPolicyService.Dependencies }
 
-    let handle deps (actor, command) =
+    let handleAsync deps (actor, command) =
         asyncResult {
             let! assignee =
-                deps.UserRef.GetByUserName
+                deps.UserRef.GetByUserNameAsync
                 |> AsyncResult.maybeFetchAsync (ValidationError "Could not find assignee user")
                 <| command.AssigneeUserName
 
             let! reviewer =
-                deps.UserRef.GetByUserName
+                deps.UserRef.GetByUserNameAsync
                 |> AsyncResult.maybeFetchAsync (ValidationError "Could not find reviewer user")
                 <| command.ReviewerUserName
 
@@ -34,6 +34,6 @@ module CreateTodo =
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
 
             return!
-                deps.Repository.Save(actor, entity)
+                deps.Repository.SaveAsync(actor, entity)
                 |> Async.map (fun x -> { ItemId = x.Base.IdSet.PublicId })
         }
