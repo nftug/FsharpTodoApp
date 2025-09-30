@@ -29,9 +29,9 @@ type TodoUpdateStatusPolicy(actor, entity, newStatus) =
 
             match status, newStatus, (actor, reviewer), (actor, assignee) with
             // Done status can be changed only by admin or the reviewer
-            | c, n, ReviewBlocked, _ when c = Done || n = Done -> false
+            | c, n, CannotActReviewer, _ when c = Done || n = Done -> false
             // If actor is neither the reviewer nor the assignee, cannot change status
-            | _, _, ReviewBlocked, AssignBlocked -> false
+            | _, _, CannotActReviewer, CannotActAssignee -> false
             // In all other cases, allow status change
             | _ -> true
 

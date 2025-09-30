@@ -40,8 +40,8 @@ module TodoEntity =
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
             let! validDueDate = dueDate |> TodoDueDate.tryCreate ctx
-            let! validAssignee = assignee |> TodoAssignee.tryAssign ctx
-            let! validReviewer = reviewer |> TodoReviewer.tryAssign ctx
+            let! validAssignee = assignee |> TodoAssignee.tryReassign ctx this.Assignee
+            let! validReviewer = reviewer |> TodoReviewer.tryReassign ctx this.Reviewer
 
             return
                 { this with

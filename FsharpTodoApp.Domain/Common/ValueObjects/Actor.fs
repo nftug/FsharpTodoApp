@@ -7,3 +7,5 @@ type Actor =
 
 module Actor =
     let isAtLeast role actor = actor.Role |> ActorRole.isAtLeast role
+
+    let isUser userInfo actor = userInfo = actor.UserInfo
