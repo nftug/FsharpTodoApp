@@ -6,9 +6,9 @@ open FsharpTodoApp.Domain.Features.Todo.Entities
 open FsharpTodoApp.Domain.Features.Todo.Interfaces
 open FsharpTodoApp.Infrastructure.Persistence.Utils
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
+open FsharpTodoApp.Domain.Common.Entities
 
 module private TodoMapHelper =
-    open FsharpTodoApp.Domain.Common.Entities
     open FsharpTodoApp.Domain.Features.Todo.ValueObjects
     open FsharpTodoApp.Application.Features.Todo.Enums
 
@@ -47,12 +47,11 @@ type TodoRepository(ctx: FsharpTodoApp.Infrastructure.Persistence.AppDbContext) 
         member _.SaveAsync(_, entity) : Async<TodoEntity> =
             async {
                 let! newBase =
-                    RepositoryHelper.saveAsync
-                        ctx
-                        (fun ctx -> ctx.Todos) // Include any navigation properties if needed
-                        entity.Base
-                        (fun e -> entity |> TodoDataModel.dehydrate e)
-                        None
+                    { EntityBase = entity.Base
+                      Query = ctx.Todos
+                      Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d
+                      AfterSave = None }
+                    |> RepositoryHelper.saveAsync ctx
 
                 return { entity with Base = newBase }
             }

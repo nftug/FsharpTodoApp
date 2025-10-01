@@ -1,51 +1,66 @@
 namespace FsharpTodoApp.Infrastructure.Persistence.Utils
 
+open FsharpTodoApp.Infrastructure.Persistence.DataModels
+open FsharpTodoApp.Domain.Common.Entities
+open System.Linq
+
+type SaveSpec<'T when 'T :> DataModelBase and 'T: (new: unit -> 'T) and 'T: not struct> =
+    { EntityBase: EntityBase
+      Query: IQueryable<'T>
+      Dehydrate: 'T -> unit
+      AfterSave: ('T -> unit) option }
+
 module RepositoryHelper =
-    open FsharpTodoApp.Domain.Common.Entities
     open FsharpTodoApp.Infrastructure.Persistence
-    open FsharpTodoApp.Infrastructure.Persistence.DataModels
     open Microsoft.EntityFrameworkCore
-    open System.Linq
 
-    let saveAsync<'T when 'T :> DataModelBase and 'T: (new: unit -> 'T) and 'T: not struct>
-        (ctx: AppDbContext)
-        (queryableFn: AppDbContext -> IQueryable<'T>)
-        (entityBase: EntityBase)
-        (fromDomain: 'T -> unit)
-        (fromDomainForIntermediates: ('T -> unit) option)
-        =
+    let private loadTrackedAsync spec =
         async {
-            use! transaction = ctx.Database.BeginTransactionAsync() |> Async.AwaitTask
+            if spec.EntityBase |> EntityBase.isNew then
+                return None
+            else
+                let! existing =
+                    spec.Query
+                        .AsTracking()
+                        .SingleOrDefaultAsync(fun x -> x.Id = spec.EntityBase.IdSet.DbId)
+                    |> Async.AwaitTask
 
-            let! existing =
-                (queryableFn ctx)
-                    .AsTracking()
-                    .SingleOrDefaultAsync(fun x -> x.Id = entityBase.IdSet.DbId)
-                |> Async.AwaitTask
+                return Option.ofObj existing
+        }
 
-            let updated =
-                match existing with
-                | null ->
-                    let newDataModel = new 'T()
-                    fromDomain newDataModel
-                    ctx.Add newDataModel |> ignore
-                    newDataModel
-                | existing ->
-                    fromDomain existing
-                    existing
+    let private ensureDehydrate (ctx: DbContext) spec existing =
+        match existing with
+        | Some existing ->
+            spec.Dehydrate existing
+            existing
+        | None ->
+            let newDataModel = new 'T()
+            spec.Dehydrate newDataModel
+            ctx.Add newDataModel |> ignore
+            newDataModel
+
+    let saveAsync (ctx: AppDbContext) spec =
+        async {
+            use! tx = ctx.Database.BeginTransactionAsync() |> Async.AwaitTask
+
+            let! current = loadTrackedAsync spec
+            let instance = current |> ensureDehydrate ctx spec
 
             let! _ = ctx.SaveChangesAsync() |> Async.AwaitTask
 
             // Transfer intermediates after saving to ensure they can reference the saved entity
-            fromDomainForIntermediates |> Option.iter (fun f -> f updated)
+            match spec.AfterSave with
+            | Some afterSave ->
+                afterSave instance
 
-            if ctx.ChangeTracker.HasChanges() then
-                let! _ = ctx.SaveChangesAsync() |> Async.AwaitTask
-                ()
+                if ctx.ChangeTracker.HasChanges() then
+                    let! _ = ctx.SaveChangesAsync() |> Async.AwaitTask
+                    ()
+            | None -> ()
 
-            do! transaction.CommitAsync() |> Async.AwaitTask
+            do! tx.CommitAsync() |> Async.AwaitTask
 
             ctx.ChangeTracker.Clear()
 
-            return entityBase |> EntityBase.setDbId updated.Id
+            return spec.EntityBase |> EntityBase.setDbId instance.Id
         }
