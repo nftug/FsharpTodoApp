@@ -34,8 +34,8 @@ module DataModelBase =
 
         modelBuilder.Entity<'T>().ToTable tableName |> ignore
 
-    let transferDeletionState (deletedAudit: EntityAudit option) (dataModel: DataModelBase) =
-        deletedAudit
+    let transferDeletionState (deletedAudit: DeletedAudit) (dataModel: DataModelBase) =
+        DeletedAudit.value deletedAudit
         |> Option.iter (fun audit ->
             dataModel.DeletedAt <- Some audit.Timestamp
             dataModel.DeletedBy <- Some audit.UserInfo.UserName)
@@ -44,10 +44,12 @@ module DataModelBase =
         dataModel.Id <- entityBase.IdSet.DbId
         dataModel.PublicId <- entityBase.IdSet.PublicId
 
-        dataModel.CreatedAt <- entityBase.CreatedAudit.Timestamp
-        dataModel.CreatedBy <- entityBase.CreatedAudit.UserInfo.UserName
+        CreatedAudit.value entityBase.CreatedAudit
+        |> fun audit ->
+            dataModel.CreatedAt <- audit.Timestamp
+            dataModel.CreatedBy <- audit.UserInfo.UserName
 
-        entityBase.UpdatedAudit
+        UpdatedAudit.value entityBase.UpdatedAudit
         |> Option.iter (fun audit ->
             dataModel.UpdatedAt <- Some audit.Timestamp
             dataModel.UpdatedBy <- Some audit.UserInfo.UserName)

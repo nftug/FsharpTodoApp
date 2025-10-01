@@ -4,9 +4,9 @@ open FsharpTodoApp.Domain.Common.ValueObjects
 
 type EntityBase =
     { IdSet: EntityIdSet
-      CreatedAudit: EntityAudit
-      UpdatedAudit: EntityAudit option
-      DeletedAudit: EntityAudit option }
+      CreatedAudit: CreatedAudit
+      UpdatedAudit: UpdatedAudit
+      DeletedAudit: DeletedAudit }
 
 module EntityBase =
     open FsharpTodoApp.Domain.Common.Errors
@@ -16,9 +16,9 @@ module EntityBase =
         | true ->
             Ok
                 { IdSet = EntityIdSet.create ()
-                  CreatedAudit = EntityAudit.create ctx
-                  UpdatedAudit = None
-                  DeletedAudit = None }
+                  CreatedAudit = CreatedAudit.create ctx
+                  UpdatedAudit = UpdatedAudit.none
+                  DeletedAudit = DeletedAudit.none }
         | false -> Error ForbiddenError
 
     let update ctx this =
@@ -26,7 +26,7 @@ module EntityBase =
         | true ->
             Ok
                 { this with
-                    UpdatedAudit = Some(EntityAudit.create ctx) }
+                    UpdatedAudit = UpdatedAudit.create ctx }
         | false -> Error ForbiddenError
 
     let delete ctx this =
@@ -34,12 +34,12 @@ module EntityBase =
         | true ->
             Ok
                 { this with
-                    DeletedAudit = Some(EntityAudit.create ctx) }
+                    DeletedAudit = DeletedAudit.create ctx }
         | false -> Error ForbiddenError
 
     let isNew this = this.IdSet.DbId = 0L
 
-    let isDeleted this = this.DeletedAudit.IsSome
+    let isDeleted this = this.DeletedAudit <> DeletedAudit.none
 
     let setDbId dbId this =
         { this with
@@ -47,20 +47,6 @@ module EntityBase =
 
     let recreate (dbId, publicId) (createdAt, createdBy) (updatedAt, updatedBy) (deletedAt, deletedBy) =
         { IdSet = { DbId = dbId; PublicId = publicId }
-          CreatedAudit =
-            { UserInfo = { UserName = createdBy }
-              Timestamp = createdAt }
-          UpdatedAudit =
-            match updatedAt, updatedBy with
-            | Some ts, Some user ->
-                Some
-                    { UserInfo = { UserName = user }
-                      Timestamp = ts }
-            | _ -> None
-          DeletedAudit =
-            match deletedAt, deletedBy with
-            | Some ts, Some user ->
-                Some
-                    { UserInfo = { UserName = user }
-                      Timestamp = ts }
-            | _ -> None }
+          CreatedAudit = CreatedAudit.recreate (createdAt, createdBy)
+          UpdatedAudit = UpdatedAudit.recreate (updatedAt, updatedBy)
+          DeletedAudit = DeletedAudit.recreate (deletedAt, deletedBy) }
