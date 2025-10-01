@@ -16,7 +16,7 @@ module TodoStatusEnum =
         | InProgress -> TodoStatusEnum.InProgress
         | Done -> TodoStatusEnum.Done
 
-    let toDomain =
+    let ofDomain =
         function
         | TodoStatusEnum.Todo -> Todo
         | TodoStatusEnum.InProgress -> InProgress

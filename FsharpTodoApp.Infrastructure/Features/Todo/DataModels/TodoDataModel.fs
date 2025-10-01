@@ -22,8 +22,8 @@ module TodoDataModel =
     let onModelCreating modelBuilder =
         DataModelBase.onModelCreating<TodoDataModel> "Todos" modelBuilder
 
-    let fromDomain (domain: TodoEntity) (dataModel: TodoDataModel) =
-        DataModelBase.transferEntityBase domain.Base dataModel
+    let dehydrate (dataModel: TodoDataModel) (domain: TodoEntity) =
+        domain.Base |> DataModelBase.dehydrate dataModel
 
         dataModel.Title <- domain.Title |> TodoTitle.value
         dataModel.Description <- domain.Description |> TodoDescription.value

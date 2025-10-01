@@ -12,7 +12,7 @@ module private TodoMapHelper =
     open FsharpTodoApp.Domain.Features.Todo.ValueObjects
     open FsharpTodoApp.Application.Features.Todo.Enums
 
-    let domainMapExpression =
+    let hydrationExpression =
         <@
             fun (e: TodoDataModel) ->
                 { Base =
@@ -24,7 +24,7 @@ module private TodoMapHelper =
                   Title = e.Title |> TodoTitle.hydrate
                   Description = e.Description |> TodoDescription.hydrate
                   DueDate = e.DueDate |> TodoDueDate.hydrate
-                  Status = e.Status |> TodoStatusEnum.toDomain |> TodoStatus.hydrate
+                  Status = e.Status |> TodoStatusEnum.ofDomain |> TodoStatus.hydrate
                   Assignee = e.Assignee |> TodoAssignee.hydrate
                   Reviewer = e.Reviewer |> TodoReviewer.hydrate }
         @>
@@ -37,7 +37,7 @@ type TodoRepository(ctx: FsharpTodoApp.Infrastructure.Persistence.AppDbContext) 
                 let! todo =
                     ctx.Todos
                         .Where(fun x -> x.PublicId = id)
-                        .Select(TodoMapHelper.domainMapExpression)
+                        .Select(TodoMapHelper.hydrationExpression)
                         .SingleOrDefaultAsync()
                     |> Async.AwaitTask
 
@@ -51,7 +51,7 @@ type TodoRepository(ctx: FsharpTodoApp.Infrastructure.Persistence.AppDbContext) 
                         ctx
                         (fun ctx -> ctx.Todos) // Include any navigation properties if needed
                         entity.Base
-                        (fun e -> e |> TodoDataModel.fromDomain entity)
+                        (fun e -> entity |> TodoDataModel.dehydrate e)
                         None
 
                 return { entity with Base = newBase }
