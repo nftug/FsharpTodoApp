@@ -7,7 +7,7 @@ module RepositoryHelper =
     open Microsoft.EntityFrameworkCore
     open System.Linq
 
-    let saveAsync<'T when 'T :> DataModelBase<'T> and 'T: (new: unit -> 'T) and 'T: not struct>
+    let saveAsync<'T when 'T :> DataModelBase and 'T: (new: unit -> 'T) and 'T: not struct>
         (ctx: AppDbContext)
         (queryableFn: AppDbContext -> IQueryable<'T>)
         (entityBase: EntityBase)

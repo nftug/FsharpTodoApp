@@ -4,8 +4,9 @@ open System
 open FsharpTodoApp.Infrastructure.Persistence.DataModels
 open FsharpTodoApp.Application.Features.Todo.Enums
 
+[<Sealed>]
 type TodoDataModel() =
-    inherit DataModelBase<TodoDataModel>()
+    inherit DataModelBase()
 
     member val Title = String.Empty with get, set
     member val Description: string option = None with get, set
@@ -15,11 +16,10 @@ type TodoDataModel() =
     member val Reviewer: string option = None with get, set
 
 module TodoDataModel =
-    open Microsoft.EntityFrameworkCore
     open FsharpTodoApp.Domain.Features.Todo.Entities
     open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 
-    let onModelCreating (modelBuilder: ModelBuilder) =
+    let onModelCreating modelBuilder =
         DataModelBase.onModelCreating<TodoDataModel> "Todos" modelBuilder
 
     let fromDomain (domain: TodoEntity) (dataModel: TodoDataModel) =

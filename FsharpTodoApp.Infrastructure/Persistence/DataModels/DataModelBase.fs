@@ -5,7 +5,7 @@ open System.ComponentModel.DataAnnotations
 open Microsoft.EntityFrameworkCore
 
 [<AbstractClass>]
-type DataModelBase<'T when 'T :> DataModelBase<'T> and 'T: not struct>() =
+type DataModelBase() =
     [<Key>]
     member val Id = 0L with get, set
 
@@ -23,7 +23,7 @@ module DataModelBase =
     open FsharpTodoApp.Domain.Common.ValueObjects
     open FsharpTodoApp.Domain.Common.Entities
 
-    let onModelCreating<'T when 'T :> DataModelBase<'T> and 'T: not struct>
+    let onModelCreating<'T when 'T :> DataModelBase and 'T: not struct>
         (tableName: string)
         (modelBuilder: ModelBuilder)
         =
@@ -34,13 +34,13 @@ module DataModelBase =
 
         modelBuilder.Entity<'T>().ToTable tableName |> ignore
 
-    let transferDeletionState (deletedAudit: EntityAudit option) (dataModel: DataModelBase<_>) =
+    let transferDeletionState (deletedAudit: EntityAudit option) (dataModel: DataModelBase) =
         deletedAudit
         |> Option.iter (fun audit ->
             dataModel.DeletedAt <- Some audit.Timestamp
             dataModel.DeletedBy <- Some audit.UserInfo.UserName)
 
-    let transferEntityBase (entityBase: EntityBase) (dataModel: DataModelBase<_>) =
+    let transferEntityBase (entityBase: EntityBase) (dataModel: DataModelBase) =
         dataModel.Id <- entityBase.IdSet.DbId
         dataModel.PublicId <- entityBase.IdSet.PublicId
 

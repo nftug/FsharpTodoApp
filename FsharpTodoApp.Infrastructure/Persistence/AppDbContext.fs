@@ -3,10 +3,10 @@ namespace FsharpTodoApp.Infrastructure.Persistence
 open Microsoft.EntityFrameworkCore
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 
-type AppDbContext(options: DbContextOptions<AppDbContext>) =
+type AppDbContext(options) =
     inherit DbContext(options)
 
-    override _.OnConfiguring(optionsBuilder: DbContextOptionsBuilder) =
+    override _.OnConfiguring optionsBuilder =
         optionsBuilder.UseQueryTrackingBehavior QueryTrackingBehavior.NoTracking
         |> ignore
 
@@ -15,6 +15,6 @@ type AppDbContext(options: DbContextOptions<AppDbContext>) =
     [<DefaultValue>]
     val mutable Todos: DbSet<TodoDataModel>
 
-    override _.OnModelCreating(modelBuilder: ModelBuilder) =
+    override _.OnModelCreating modelBuilder =
         TodoDataModel.onModelCreating modelBuilder
         base.OnModelCreating modelBuilder
