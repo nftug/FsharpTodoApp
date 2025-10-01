@@ -4,39 +4,31 @@ open System.Linq
 open Microsoft.EntityFrameworkCore
 open FsharpTodoApp.Domain.Features.Todo.Entities
 open FsharpTodoApp.Domain.Features.Todo.Interfaces
+open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Infrastructure.Persistence.Utils
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
+open FsharpTodoApp.Application.Features.Todo.Enums
 open FsharpTodoApp.Domain.Common.Entities
 open FsToolkit.ErrorHandling
-
-module private TodoMapHelper =
-    open FsharpTodoApp.Domain.Features.Todo.ValueObjects
-    open FsharpTodoApp.Application.Features.Todo.Enums
-
-    let hydrationExpression =
-        <@
-            fun (e: TodoDataModel) ->
-                { Base =
-                    EntityBase.hydrate
-                        (e.Id, e.PublicId)
-                        (e.CreatedAt, e.CreatedBy)
-                        (e.UpdatedAt, e.UpdatedBy)
-                        (e.DeletedAt, e.DeletedBy)
-                  Title = e.Title |> TodoTitle.hydrate
-                  Description = e.Description |> TodoDescription.hydrate
-                  DueDate = e.DueDate |> TodoDueDate.hydrate
-                  Status = e.Status |> TodoStatusEnum.ofDomain |> TodoStatus.hydrate
-                  Assignee = e.Assignee |> TodoAssignee.hydrate
-                  Reviewer = e.Reviewer |> TodoReviewer.hydrate }
-        @>
-        |> ExprHelper.toExpression
 
 type TodoRepository(ctx: FsharpTodoApp.Infrastructure.Persistence.AppDbContext) =
     interface ITodoRepository with
         member _.GetById(_, id) =
             ctx.Todos
                 .Where(fun x -> x.PublicId = id)
-                .Select(TodoMapHelper.hydrationExpression)
+                .Select(fun e ->
+                    { Base =
+                        EntityBase.hydrate
+                            (e.Id, e.PublicId)
+                            (e.CreatedAt, e.CreatedBy)
+                            (e.UpdatedAt, e.UpdatedBy)
+                            (e.DeletedAt, e.DeletedBy)
+                      Title = e.Title |> TodoTitle.hydrate
+                      Description = e.Description |> TodoDescription.hydrate
+                      DueDate = e.DueDate |> TodoDueDate.hydrate
+                      Status = e.Status |> TodoStatusEnum.ofDomain |> TodoStatus.hydrate
+                      Assignee = e.Assignee |> TodoAssignee.hydrate
+                      Reviewer = e.Reviewer |> TodoReviewer.hydrate })
                 .SingleOrDefaultAsync()
             |> Task.map Option.ofObj
 

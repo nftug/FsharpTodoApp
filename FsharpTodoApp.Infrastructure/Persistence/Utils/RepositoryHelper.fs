@@ -16,17 +16,9 @@ module RepositoryHelper =
     open FsToolkit.ErrorHandling
 
     let private loadTracked spec =
-        task {
-            if spec.EntityBase |> EntityBase.isNew then
-                return None
-            else
-                let! existing =
-                    spec.Query
-                        .AsTracking()
-                        .SingleOrDefaultAsync(fun x -> x.Id = spec.EntityBase.IdSet.DbId)
-
-                return Option.ofObj existing
-        }
+        match spec.EntityBase.IdSet.DbId with
+        | dbId when dbId = 0L -> task { return None }
+        | dbId -> spec.Query.SingleOrDefaultAsync(fun x -> x.Id = dbId) |> Task.map Option.ofObj
 
     let private ensureDehydrate (ctx: DbContext) spec existing =
         match existing with
@@ -43,8 +35,8 @@ module RepositoryHelper =
         task {
             use! tx = ctx.Database.BeginTransactionAsync()
 
-            let! current = loadTracked spec
-            let instance = current |> ensureDehydrate ctx spec
+            let! tracked = loadTracked spec
+            let instance = tracked |> ensureDehydrate ctx spec
 
             do! ctx.SaveChangesAsync() |> Task.ignore
 
