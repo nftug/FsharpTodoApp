@@ -41,9 +41,7 @@ module EntityBase =
 
     let isDeleted this = this.DeletedAudit <> DeletedAudit.none
 
-    let setDbId dbId this =
-        { this with
-            IdSet = { this.IdSet with DbId = dbId } }
+    let setDbId dbId this = { this with IdSet.DbId = dbId }
 
     let hydrate (dbId, publicId) (createdAt, createdBy) (updatedAt, updatedBy) (deletedAt, deletedBy) =
         { IdSet = { DbId = dbId; PublicId = publicId }

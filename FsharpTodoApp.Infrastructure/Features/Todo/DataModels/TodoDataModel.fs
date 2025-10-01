@@ -29,5 +29,5 @@ module TodoDataModel =
         dataModel.Description <- domain.Description |> TodoDescription.value
         dataModel.DueDate <- domain.DueDate |> TodoDueDate.value
         dataModel.Status <- domain.Status |> TodoStatus.value |> TodoStatusEnum.fromDomain
-        dataModel.Assignee <- domain.Assignee |> TodoAssignee.value |> Option.map (fun x -> x.UserName)
-        dataModel.Reviewer <- domain.Reviewer |> TodoReviewer.value |> Option.map (fun x -> x.UserName)
+        dataModel.Assignee <- domain.Assignee |> TodoAssignee.value |> Option.map _.UserName
+        dataModel.Reviewer <- domain.Reviewer |> TodoReviewer.value |> Option.map _.UserName

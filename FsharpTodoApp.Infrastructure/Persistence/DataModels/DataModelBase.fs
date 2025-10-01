@@ -30,7 +30,7 @@ module DataModelBase =
         modelBuilder.Entity<'T>().HasIndex(fun e -> e.PublicId :> Object).IsUnique()
         |> ignore
 
-        modelBuilder.Entity<'T>().HasQueryFilter(fun e -> e.DeletedAt.IsNone) |> ignore
+        modelBuilder.Entity<'T>().HasQueryFilter _.DeletedAt.IsNone |> ignore
 
         modelBuilder.Entity<'T>().ToTable tableName |> ignore
 
