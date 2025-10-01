@@ -9,11 +9,11 @@ module TodoAssignee =
 
     let value (TodoAssignee assignee) = assignee
 
-    let (|AssigneeAllowed|AssigneeBlocked|NoAssignee|) (actor, next, current) =
-        match actor, value next, current with
+    let (|AssigneeAllowed|AssigneeBlocked|NoAssignee|) (actor, current, next) =
+        match actor, current, value next with
         | _, None, None -> NoAssignee
-        | a, None, Some(TodoAssignee _) when a |> Actor.isAtLeast Manager -> NoAssignee
-        | a, Some next, _ when a |> Actor.isAtLeast Manager || a |> Actor.isUser next -> AssigneeAllowed
+        | a, Some(TodoAssignee _), None when a |> Actor.isAtLeast Manager -> NoAssignee
+        | a, _, Some next when a |> Actor.isAtLeast Manager || a |> Actor.isUser next -> AssigneeAllowed
         | _ -> AssigneeBlocked
 
     let (|CanActAssignee|CannotActAssignee|NoAssignee|) (actor, current) =
@@ -23,12 +23,12 @@ module TodoAssignee =
         | _ -> CannotActAssignee
 
     let tryAssign ctx newAssignee =
-        match ctx.Actor, TodoAssignee newAssignee, None with
+        match ctx.Actor, None, TodoAssignee newAssignee with
         | AssigneeBlocked -> Validation.error "Only manager and admin can assign other users."
         | _ -> Ok(TodoAssignee newAssignee)
 
     let tryReassign ctx current newAssignee =
-        match ctx.Actor, TodoAssignee newAssignee, Some current with
+        match ctx.Actor, Some current, TodoAssignee newAssignee with
         | AssigneeBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
         | _ -> Ok(TodoAssignee newAssignee)
 

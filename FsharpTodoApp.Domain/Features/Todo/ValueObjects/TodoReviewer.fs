@@ -9,11 +9,11 @@ module TodoReviewer =
 
     let value (TodoReviewer reviewer) = reviewer
 
-    let (|ReviewerAllowed|ReviewerBlocked|NoReviewer|) (actor, next, current) =
-        match actor, value next, current with
+    let (|ReviewerAllowed|ReviewerBlocked|NoReviewer|) (actor, current, next) =
+        match actor, current, value next with
         | _, None, None -> NoReviewer
-        | a, None, Some(TodoReviewer _) when a |> Actor.isAtLeast Manager -> NoReviewer
-        | a, Some next, _ when a |> Actor.isAtLeast Manager || a |> Actor.isUser next -> ReviewerAllowed
+        | a, Some(TodoReviewer _), None when a |> Actor.isAtLeast Manager -> NoReviewer
+        | a, _, Some next when a |> Actor.isAtLeast Manager || a |> Actor.isUser next -> ReviewerAllowed
         | _ -> ReviewerBlocked
 
     let (|CanActReviewer|CannotActReviewer|NoReviewer|) (actor, current) =
@@ -23,12 +23,12 @@ module TodoReviewer =
         | _ -> CannotActReviewer
 
     let tryAssign ctx newReviewer =
-        match ctx.Actor, TodoReviewer newReviewer, None with
+        match ctx.Actor, None, TodoReviewer newReviewer with
         | ReviewerBlocked -> Validation.error "Only manager and admin can assign other users."
         | _ -> Ok(TodoReviewer newReviewer)
 
     let tryReassign ctx current newReviewer =
-        match ctx.Actor, TodoReviewer newReviewer, Some current with
+        match ctx.Actor, Some current, TodoReviewer newReviewer with
         | ReviewerBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
         | _ -> Ok(TodoReviewer newReviewer)
 
