@@ -12,7 +12,7 @@ module EntityBase =
     open FsharpTodoApp.Domain.Common.Errors
 
     let tryCreate ctx =
-        match ctx.Policy.CanCreate with
+        match ctx.Permission.CanCreate with
         | true ->
             Ok
                 { IdSet = EntityIdSet.create ()
@@ -22,7 +22,7 @@ module EntityBase =
         | false -> Error ForbiddenError
 
     let tryUpdate ctx this =
-        match ctx.Policy.CanUpdate with
+        match ctx.Permission.CanUpdate with
         | true ->
             Ok
                 { this with
@@ -30,7 +30,7 @@ module EntityBase =
         | false -> Error ForbiddenError
 
     let tryDelete ctx this =
-        match ctx.Policy.CanDelete with
+        match ctx.Permission.CanDelete with
         | true ->
             Ok
                 { this with

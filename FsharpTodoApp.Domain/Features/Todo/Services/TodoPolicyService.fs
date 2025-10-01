@@ -9,24 +9,29 @@ module TodoPolicyService =
     type Dependencies = { DateTime: IDateTimeProvider }
 
     let buildCreated deps actor (title, description, dueDate, assignee, reviewer) =
-        let ctx = TodoCreationPolicy.create actor |> AuditContext.create deps.DateTime
+        let ctx =
+            TodoCreationPermission.create () |> AuditContext.create deps.DateTime actor
+
         TodoEntity.tryCreate ctx (title, description, dueDate, assignee, reviewer)
 
     let buildUpdated deps actor (title, description, dueDate, assignee, reviewer) entity =
-        let ctx = TodoUpdatePolicy.create actor entity |> AuditContext.create deps.DateTime
+        let ctx =
+            TodoUpdatePermission.create actor entity
+            |> AuditContext.create deps.DateTime actor
 
         entity
         |> TodoEntity.tryUpdate ctx (title, description, dueDate, assignee, reviewer)
 
     let buildStatusUpdated deps actor newStatus entity =
         let ctx =
-            TodoUpdateStatusPolicy.create actor entity newStatus
-            |> AuditContext.create deps.DateTime
+            TodoUpdateStatusPermission.create actor entity newStatus
+            |> AuditContext.create deps.DateTime actor
 
         entity |> TodoEntity.tryUpdateStatus ctx newStatus
 
     let buildDeleted deps actor entity =
         let ctx =
-            TodoDeletionPolicy.create actor entity |> AuditContext.create deps.DateTime
+            TodoDeletionPermission.create actor entity
+            |> AuditContext.create deps.DateTime actor
 
         entity |> TodoEntity.tryDelete ctx

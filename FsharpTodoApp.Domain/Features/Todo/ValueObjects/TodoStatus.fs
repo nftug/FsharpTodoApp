@@ -20,9 +20,9 @@ module TodoStatus =
     let defaultStatus = TodoStatus Todo
 
     let tryUpdate ctx newStatus =
-        match ctx.Policy.CanUpdate with
+        match ctx.Permission.CanUpdate with
         | true -> Ok(TodoStatus newStatus)
-        | false -> Validation.error "Cannot update status due to policy."
+        | false -> Validation.error "Cannot update status due to permission."
 
     let value (TodoStatus status) = status
 

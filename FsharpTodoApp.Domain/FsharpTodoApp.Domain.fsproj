@@ -15,13 +15,13 @@
     <Compile Include="Common/ValueObjects/ActorRole.fs" />
     <Compile Include="Common/ValueObjects/Actor.fs" />
 
-    <Compile Include="Common/ValueObjects/ActorPolicy.fs" />
+    <Compile Include="Common/ValueObjects/Permission.fs" />
     <Compile Include="Common/ValueObjects/AuditContext.fs" />
     <Compile Include="Common/ValueObjects/EntityAudit.fs" />
     <Compile Include="Common/Entities/EntityBase.fs" />
 
-    <Compile Include="Common/Policies/PassThroughActorPolicy.fs" />
-    <Compile Include="Common/Policies/OwnerOnlyActorPolicy.fs" />
+    <Compile Include="Common/Policies/PassThroughPermission.fs" />
+    <Compile Include="Common/Policies/OwnerOnlyPermission.fs" />
 
     <Compile Include="Features/User/Interfaces/IUserReferenceService.fs" />
 
@@ -32,7 +32,7 @@
     <Compile Include="Features/Todo/ValueObjects/TodoStatus.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoAssignee.fs" />
     <Compile Include="Features/Todo/Entities/TodoEntity.fs" />
-    <Compile Include="Features/Todo/Policies/TodoPolicies.fs" />
+    <Compile Include="Features/Todo/Policies/TodoPermissions.fs" />
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
     <Compile Include="Features/Todo/Interfaces/ITodoRepository.fs" />
   </ItemGroup>

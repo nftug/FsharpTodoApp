@@ -7,21 +7,20 @@ open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects.TodoReviewer
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects.TodoAssignee
 
-module TodoCreationPolicy =
-    let create actor = PassThroughActorPolicy.create actor
+module TodoCreationPermission =
+    let create = PassThroughPermission.create
 
-module TodoUpdatePolicy =
+module TodoUpdatePermission =
     let create actor entity =
-        OwnerOnlyActorPolicy.create actor entity.Base
+        OwnerOnlyPermission.create actor entity.Base
 
-module TodoDeletionPolicy =
+module TodoDeletionPermission =
     let create actor entity =
-        OwnerOnlyActorPolicy.create actor entity.Base
+        OwnerOnlyPermission.create actor entity.Base
 
-module TodoUpdateStatusPolicy =
+module TodoUpdateStatusPermission =
     let create actor entity newStatus =
-        { Actor = actor
-          CanCreate = false
+        { CanCreate = false
           CanUpdate =
             let reviewer = entity.Reviewer
             let assignee = entity.Assignee
