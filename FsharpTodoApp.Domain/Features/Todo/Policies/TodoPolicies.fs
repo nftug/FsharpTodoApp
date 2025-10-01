@@ -1,28 +1,28 @@
 namespace FsharpTodoApp.Domain.Features.Todo.Policies
 
+open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Common.Policies
-open FsharpTodoApp.Domain.Features.Auth.Policies
 open FsharpTodoApp.Domain.Features.Todo.Entities
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects.TodoReviewer
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects.TodoAssignee
 
-type TodoCreationPolicy(actor) =
-    inherit PassThroughActorPolicy(actor)
+module TodoCreationPolicy =
+    let create actor = PassThroughActorPolicy.create actor
 
-type TodoUpdatePolicy(actor, entity) =
-    inherit OwnerOnlyActorPolicy(actor, entity.Base)
+module TodoUpdatePolicy =
+    let create actor entity =
+        OwnerOnlyActorPolicy.create actor entity.Base
 
-type TodoDeletionPolicy(actor, entity) =
-    inherit OwnerOnlyActorPolicy(actor, entity.Base)
+module TodoDeletionPolicy =
+    let create actor entity =
+        OwnerOnlyActorPolicy.create actor entity.Base
 
-type TodoUpdateStatusPolicy(actor, entity, newStatus) =
-    interface IActorPolicy with
-        member _.Actor = actor
-
-        member _.CanCreate = false
-
-        member _.CanUpdate =
+module TodoUpdateStatusPolicy =
+    let create actor entity newStatus =
+        { Actor = actor
+          CanCreate = false
+          CanUpdate =
             let reviewer = entity.Reviewer
             let assignee = entity.Assignee
             let status = entity.Status |> TodoStatus.value
@@ -34,5 +34,4 @@ type TodoUpdateStatusPolicy(actor, entity, newStatus) =
             | _, _, CannotActReviewer, CannotActAssignee -> false
             // In all other cases, allow status change
             | _ -> true
-
-        member _.CanDelete = false
+          CanDelete = false }

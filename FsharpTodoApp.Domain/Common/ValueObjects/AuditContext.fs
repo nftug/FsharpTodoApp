@@ -1,10 +1,10 @@
 namespace FsharpTodoApp.Domain.Common.ValueObjects
 
 open FsharpTodoApp.Domain.Common.Services
-open FsharpTodoApp.Domain.Common.Policies
+open FsharpTodoApp.Domain.Common.ValueObjects
 
-type AuditContext<'T when 'T :> IActorPolicy> =
-    { Policy: 'T
+type AuditContext =
+    { Policy: ActorPolicy
       Actor: Actor
       DateTime: IDateTimeProvider }
 
