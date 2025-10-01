@@ -15,7 +15,7 @@ module CreateTodo =
           UserRef: IUserReferenceService
           PolicyDeps: TodoPolicyService.Dependencies }
 
-    let handleAsync deps (actor, command) =
+    let handleAsync deps (actor, command: TodoCreateCommandDto) =
         asyncResult {
             let! assignee =
                 deps.UserRef.GetByUserNameAsync

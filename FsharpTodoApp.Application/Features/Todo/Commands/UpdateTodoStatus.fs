@@ -13,7 +13,7 @@ module UpdateTodoStatus =
         { Repository: ITodoRepository
           PolicyDeps: TodoPolicyService.Dependencies }
 
-    let handleAsync deps (actor, id, command) =
+    let handleAsync deps (actor, id, command: TodoUpdateStatusCommandDto) =
         asyncResult {
             let! entity =
                 deps.Repository.GetByIdAsync(Some actor, id)

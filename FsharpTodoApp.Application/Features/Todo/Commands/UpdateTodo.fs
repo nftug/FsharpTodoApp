@@ -14,7 +14,7 @@ module UpdateTodo =
           UserRef: IUserReferenceService
           PolicyDeps: TodoPolicyService.Dependencies }
 
-    let handleAsync deps (actor, id, command) =
+    let handleAsync deps (actor, id, command: TodoUpdateCommandDto) =
         asyncResult {
             let! entity =
                 deps.Repository.GetByIdAsync(Some actor, id)
