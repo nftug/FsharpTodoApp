@@ -16,17 +16,17 @@ module private TodoMapHelper =
         <@
             fun (e: TodoDataModel) ->
                 { Base =
-                    EntityBase.recreate
+                    EntityBase.hydrate
                         (e.Id, e.PublicId)
                         (e.CreatedAt, e.CreatedBy)
                         (e.UpdatedAt, e.UpdatedBy)
                         (e.DeletedAt, e.DeletedBy)
-                  Title = e.Title |> TodoTitle.recreate
-                  Description = e.Description |> TodoDescription.recreate
-                  DueDate = e.DueDate |> TodoDueDate.recreate
-                  Status = e.Status |> TodoStatusEnum.toDomain |> TodoStatus.recreate
-                  Assignee = e.Assignee |> TodoAssignee.recreate
-                  Reviewer = e.Reviewer |> TodoReviewer.recreate }
+                  Title = e.Title |> TodoTitle.hydrate
+                  Description = e.Description |> TodoDescription.hydrate
+                  DueDate = e.DueDate |> TodoDueDate.hydrate
+                  Status = e.Status |> TodoStatusEnum.toDomain |> TodoStatus.hydrate
+                  Assignee = e.Assignee |> TodoAssignee.hydrate
+                  Reviewer = e.Reviewer |> TodoReviewer.hydrate }
         @>
         |> ExprHelper.toExpression
 

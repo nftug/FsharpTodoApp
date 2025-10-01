@@ -26,4 +26,4 @@ module TodoStatus =
 
     let value (TodoStatus status) = status
 
-    let recreate status = status |> TodoStatus
+    let hydrate status = status |> TodoStatus

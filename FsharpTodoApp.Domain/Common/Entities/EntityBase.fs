@@ -45,8 +45,8 @@ module EntityBase =
         { this with
             IdSet = { this.IdSet with DbId = dbId } }
 
-    let recreate (dbId, publicId) (createdAt, createdBy) (updatedAt, updatedBy) (deletedAt, deletedBy) =
+    let hydrate (dbId, publicId) (createdAt, createdBy) (updatedAt, updatedBy) (deletedAt, deletedBy) =
         { IdSet = { DbId = dbId; PublicId = publicId }
-          CreatedAudit = CreatedAudit.recreate (createdAt, createdBy)
-          UpdatedAudit = UpdatedAudit.recreate (updatedAt, updatedBy)
-          DeletedAudit = DeletedAudit.recreate (deletedAt, deletedBy) }
+          CreatedAudit = CreatedAudit.hydrate (createdAt, createdBy)
+          UpdatedAudit = UpdatedAudit.hydrate (updatedAt, updatedBy)
+          DeletedAudit = DeletedAudit.hydrate (deletedAt, deletedBy) }

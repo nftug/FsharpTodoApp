@@ -14,6 +14,6 @@ module TodoTitle =
         | t when t.Length > maxLen -> Validation.errorf "Title cannot be longer than %d characters." maxLen
         | t -> Ok(TodoTitle t)
 
-    let recreate text = TodoTitle text
+    let hydrate text = TodoTitle text
 
     let value (TodoTitle current) = current

@@ -11,6 +11,6 @@ module TodoDueDate =
         | Some dt when dt < ctx.DateTime.UtcNow -> Validation.error "Due date cannot be in the past."
         | dt -> Ok(TodoDueDate dt)
 
-    let recreate date = TodoDueDate date
+    let hydrate date = TodoDueDate date
 
     let value (TodoDueDate current) = current
