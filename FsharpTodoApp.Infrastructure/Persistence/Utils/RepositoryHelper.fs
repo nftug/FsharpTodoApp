@@ -13,6 +13,7 @@ type SaveSpec<'T when 'T :> DataModelBase and 'T: (new: unit -> 'T) and 'T: not 
 module RepositoryHelper =
     open FsharpTodoApp.Infrastructure.Persistence
     open Microsoft.EntityFrameworkCore
+    open FsToolkit.ErrorHandling
 
     let private loadTracked spec =
         task {
@@ -45,7 +46,7 @@ module RepositoryHelper =
             let! current = loadTracked spec
             let instance = current |> ensureDehydrate ctx spec
 
-            let! _ = ctx.SaveChangesAsync()
+            do! ctx.SaveChangesAsync() |> Task.ignore
 
             // Transfer intermediates after saving to ensure they can reference the saved entity
             match spec.AfterSave with
@@ -53,8 +54,7 @@ module RepositoryHelper =
                 afterSave instance
 
                 if ctx.ChangeTracker.HasChanges() then
-                    let! _ = ctx.SaveChangesAsync()
-                    ()
+                    do! ctx.SaveChangesAsync() |> Task.ignore
             | None -> ()
 
             do! tx.CommitAsync()

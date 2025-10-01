@@ -7,6 +7,7 @@ open FsharpTodoApp.Domain.Features.Todo.Interfaces
 open FsharpTodoApp.Infrastructure.Persistence.Utils
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 open FsharpTodoApp.Domain.Common.Entities
+open FsToolkit.ErrorHandling
 
 module private TodoMapHelper =
     open FsharpTodoApp.Domain.Features.Todo.ValueObjects
@@ -33,24 +34,16 @@ module private TodoMapHelper =
 type TodoRepository(ctx: FsharpTodoApp.Infrastructure.Persistence.AppDbContext) =
     interface ITodoRepository with
         member _.GetById(_, id) =
-            task {
-                let! todo =
-                    ctx.Todos
-                        .Where(fun x -> x.PublicId = id)
-                        .Select(TodoMapHelper.hydrationExpression)
-                        .SingleOrDefaultAsync()
-
-                return Option.ofObj todo
-            }
+            ctx.Todos
+                .Where(fun x -> x.PublicId = id)
+                .Select(TodoMapHelper.hydrationExpression)
+                .SingleOrDefaultAsync()
+            |> Task.map Option.ofObj
 
         member _.Save(_, entity) =
-            task {
-                let! newBase =
-                    { EntityBase = entity.Base
-                      Query = ctx.Todos
-                      Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d
-                      AfterSave = None }
-                    |> RepositoryHelper.save ctx
-
-                return { entity with Base = newBase }
-            }
+            { EntityBase = entity.Base
+              Query = ctx.Todos
+              Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d
+              AfterSave = None }
+            |> RepositoryHelper.save ctx
+            |> Task.map (fun newBase -> { entity with Base = newBase })
