@@ -14,8 +14,8 @@ module RepositoryHelper =
     open FsharpTodoApp.Infrastructure.Persistence
     open Microsoft.EntityFrameworkCore
 
-    let private loadTrackedAsync spec =
-        async {
+    let private loadTracked spec =
+        task {
             if spec.EntityBase |> EntityBase.isNew then
                 return None
             else
@@ -23,7 +23,6 @@ module RepositoryHelper =
                     spec.Query
                         .AsTracking()
                         .SingleOrDefaultAsync(fun x -> x.Id = spec.EntityBase.IdSet.DbId)
-                    |> Async.AwaitTask
 
                 return Option.ofObj existing
         }
@@ -39,14 +38,14 @@ module RepositoryHelper =
             ctx.Add newDataModel |> ignore
             newDataModel
 
-    let saveAsync (ctx: AppDbContext) spec =
-        async {
-            use! tx = ctx.Database.BeginTransactionAsync() |> Async.AwaitTask
+    let save (ctx: AppDbContext) spec =
+        task {
+            use! tx = ctx.Database.BeginTransactionAsync()
 
-            let! current = loadTrackedAsync spec
+            let! current = loadTracked spec
             let instance = current |> ensureDehydrate ctx spec
 
-            let! _ = ctx.SaveChangesAsync() |> Async.AwaitTask
+            let! _ = ctx.SaveChangesAsync()
 
             // Transfer intermediates after saving to ensure they can reference the saved entity
             match spec.AfterSave with
@@ -54,11 +53,11 @@ module RepositoryHelper =
                 afterSave instance
 
                 if ctx.ChangeTracker.HasChanges() then
-                    let! _ = ctx.SaveChangesAsync() |> Async.AwaitTask
+                    let! _ = ctx.SaveChangesAsync()
                     ()
             | None -> ()
 
-            do! tx.CommitAsync() |> Async.AwaitTask
+            do! tx.CommitAsync()
 
             ctx.ChangeTracker.Clear()
 

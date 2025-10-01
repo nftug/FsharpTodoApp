@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Common/Utils/AsyncResult.fs" />
     <Compile Include="Common/Enums/ActorRoleEnum.fs" />
     <Compile Include="Common/Dtos/CommonResponseDtos.fs" />
 

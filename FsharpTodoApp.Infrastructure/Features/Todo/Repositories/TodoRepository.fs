@@ -32,26 +32,25 @@ module private TodoMapHelper =
 
 type TodoRepository(ctx: FsharpTodoApp.Infrastructure.Persistence.AppDbContext) =
     interface ITodoRepository with
-        member _.GetByIdAsync(_, id) : Async<TodoEntity option> =
-            async {
+        member _.GetById(_, id) =
+            task {
                 let! todo =
                     ctx.Todos
                         .Where(fun x -> x.PublicId = id)
                         .Select(TodoMapHelper.hydrationExpression)
                         .SingleOrDefaultAsync()
-                    |> Async.AwaitTask
 
                 return Option.ofObj todo
             }
 
-        member _.SaveAsync(_, entity) : Async<TodoEntity> =
-            async {
+        member _.Save(_, entity) =
+            task {
                 let! newBase =
                     { EntityBase = entity.Base
                       Query = ctx.Todos
                       Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d
                       AfterSave = None }
-                    |> RepositoryHelper.saveAsync ctx
+                    |> RepositoryHelper.save ctx
 
                 return { entity with Base = newBase }
             }
