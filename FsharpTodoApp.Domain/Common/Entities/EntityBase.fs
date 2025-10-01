@@ -11,7 +11,7 @@ type EntityBase =
 module EntityBase =
     open FsharpTodoApp.Domain.Common.Errors
 
-    let create ctx =
+    let tryCreate ctx =
         match ctx.Policy.CanCreate with
         | true ->
             Ok
@@ -21,7 +21,7 @@ module EntityBase =
                   DeletedAudit = DeletedAudit.none }
         | false -> Error ForbiddenError
 
-    let update ctx this =
+    let tryUpdate ctx this =
         match ctx.Policy.CanUpdate with
         | true ->
             Ok
@@ -29,7 +29,7 @@ module EntityBase =
                     UpdatedAudit = UpdatedAudit.create ctx }
         | false -> Error ForbiddenError
 
-    let delete ctx this =
+    let tryDelete ctx this =
         match ctx.Policy.CanDelete with
         | true ->
             Ok

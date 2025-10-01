@@ -10,22 +10,22 @@ module TodoPolicyService =
 
     let buildCreated deps actor (title, description, dueDate, assignee, reviewer) =
         let ctx = TodoCreationPolicy actor |> AuditContext.create deps.DateTime
-        TodoEntity.create ctx (title, description, dueDate, assignee, reviewer)
+        TodoEntity.tryCreate ctx (title, description, dueDate, assignee, reviewer)
 
     let buildUpdated deps actor (title, description, dueDate, assignee, reviewer) entity =
         let ctx = TodoUpdatePolicy(actor, entity) |> AuditContext.create deps.DateTime
 
         entity
-        |> TodoEntity.update ctx (title, description, dueDate, assignee, reviewer)
+        |> TodoEntity.tryUpdate ctx (title, description, dueDate, assignee, reviewer)
 
     let buildStatusUpdated deps actor newStatus entity =
         let ctx =
             TodoUpdateStatusPolicy(actor, entity, newStatus)
             |> AuditContext.create deps.DateTime
 
-        entity |> TodoEntity.updateStatus ctx newStatus
+        entity |> TodoEntity.tryUpdateStatus ctx newStatus
 
     let buildDeleted deps actor entity =
         let ctx = TodoDeletionPolicy(actor, entity) |> AuditContext.create deps.DateTime
 
-        entity |> TodoEntity.delete ctx
+        entity |> TodoEntity.tryDelete ctx

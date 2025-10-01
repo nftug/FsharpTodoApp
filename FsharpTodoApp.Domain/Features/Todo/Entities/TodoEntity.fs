@@ -15,9 +15,9 @@ type TodoEntity =
 module TodoEntity =
     open FsToolkit.ErrorHandling
 
-    let create ctx (title, description, dueDate, assignee, reviewer) =
+    let tryCreate ctx (title, description, dueDate, assignee, reviewer) =
         result {
-            let! validBase = EntityBase.create ctx
+            let! validBase = EntityBase.tryCreate ctx
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
             let! validDueDate = dueDate |> TodoDueDate.tryCreate ctx
@@ -34,9 +34,9 @@ module TodoEntity =
                   Reviewer = validReviewer }
         }
 
-    let update ctx (title, description, dueDate, assignee, reviewer) this =
+    let tryUpdate ctx (title, description, dueDate, assignee, reviewer) this =
         result {
-            let! validBase = this.Base |> EntityBase.update ctx
+            let! validBase = this.Base |> EntityBase.tryUpdate ctx
             let! validTitle = title |> TodoTitle.tryCreate
             let! validDescription = description |> TodoDescription.tryCreate
             let! validDueDate = dueDate |> TodoDueDate.tryCreate ctx
@@ -53,10 +53,10 @@ module TodoEntity =
                     Reviewer = validReviewer }
         }
 
-    let updateStatus ctx newStatus this =
+    let tryUpdateStatus ctx newStatus this =
         result {
             let! validStatus = TodoStatus.tryUpdate ctx newStatus
-            let! validBase = this.Base |> EntityBase.update ctx
+            let! validBase = this.Base |> EntityBase.tryUpdate ctx
 
             return
                 { this with
@@ -64,8 +64,8 @@ module TodoEntity =
                     Status = validStatus }
         }
 
-    let delete ctx this =
+    let tryDelete ctx this =
         result {
-            let! validBase = this.Base |> EntityBase.delete ctx
+            let! validBase = this.Base |> EntityBase.tryDelete ctx
             return { this with Base = validBase }
         }
