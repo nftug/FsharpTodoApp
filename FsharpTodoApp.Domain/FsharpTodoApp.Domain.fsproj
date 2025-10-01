@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Common/Utils/TaskResult.fs" />
     <Compile Include="Common/Errors/AppError.fs" />
     <Compile Include="Common/Services/DateTimeProvider.fs" />
 

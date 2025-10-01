@@ -4,7 +4,6 @@ module CreateTodo =
     open FsharpTodoApp.Application.Common.Dtos
     open FsharpTodoApp.Application.Features.Todo.Dtos.Commands
     open FsharpTodoApp.Domain.Common.Errors
-    open FsharpTodoApp.Domain.Common.Utils
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
     open FsharpTodoApp.Domain.Features.Todo.Services
     open FsharpTodoApp.Domain.Features.User.Interfaces
@@ -18,14 +17,20 @@ module CreateTodo =
     let handle deps (actor, command: TodoCreateCommandDto) =
         taskResult {
             let! assignee =
-                deps.UserRef.GetByUserName
-                |> TaskResult.maybeFetch (ValidationError "Could not find assignee user")
-                <| command.AssigneeUserName
+                match command.AssigneeUserName with
+                | Some arg ->
+                    deps.UserRef.GetByUserName arg
+                    |> TaskResult.requireSome (ValidationError "Could not find assignee user")
+                    |> TaskResult.map Some
+                | None -> taskResult { return None }
 
             let! reviewer =
-                deps.UserRef.GetByUserName
-                |> TaskResult.maybeFetch (ValidationError "Could not find reviewer user")
-                <| command.ReviewerUserName
+                match command.ReviewerUserName with
+                | Some arg ->
+                    deps.UserRef.GetByUserName arg
+                    |> TaskResult.requireSome (ValidationError "Could not find reviewer user")
+                    |> TaskResult.map Some
+                | None -> taskResult { return None }
 
             let! entity =
                 TodoPolicyService.buildCreated
@@ -33,7 +38,7 @@ module CreateTodo =
                     actor
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
 
-            return!
+            return
                 deps.Repository.Save(actor, entity)
                 |> Task.map (fun x -> x.Base |> ItemCreatedResponseDto.create)
         }

@@ -1,7 +1,6 @@
 namespace FsharpTodoApp.Application.Features.Todo.Commands
 
 module UpdateTodo =
-    open FsharpTodoApp.Domain.Common.Utils
     open FsharpTodoApp.Domain.Common.Errors
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
     open FsharpTodoApp.Domain.Features.Todo.Services
@@ -19,14 +18,20 @@ module UpdateTodo =
             let! entity = deps.Repository.GetById(Some actor, id) |> TaskResult.requireSome NotFoundError
 
             let! assignee =
-                deps.UserRef.GetByUserName
-                |> TaskResult.maybeFetch (ValidationError "Could not find assignee user")
-                <| command.AssigneeUserName
+                match command.AssigneeUserName with
+                | Some arg ->
+                    deps.UserRef.GetByUserName arg
+                    |> TaskResult.requireSome (ValidationError "Could not find assignee user")
+                    |> TaskResult.map Some
+                | None -> taskResult { return None }
 
             let! reviewer =
-                deps.UserRef.GetByUserName
-                |> TaskResult.maybeFetch (ValidationError "Could not find reviewer user")
-                <| command.ReviewerUserName
+                match command.ReviewerUserName with
+                | Some arg ->
+                    deps.UserRef.GetByUserName arg
+                    |> TaskResult.requireSome (ValidationError "Could not find reviewer user")
+                    |> TaskResult.map Some
+                | None -> taskResult { return None }
 
             let! updated =
                 TodoPolicyService.buildUpdated
