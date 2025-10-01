@@ -35,5 +35,5 @@ module CreateTodo =
 
             return!
                 deps.Repository.SaveAsync(actor, entity)
-                |> Async.map (fun x -> { ItemId = x.Base.IdSet.PublicId })
+                |> Async.map (fun x -> x.Base |> ItemCreatedResponseDto.create)
         }
