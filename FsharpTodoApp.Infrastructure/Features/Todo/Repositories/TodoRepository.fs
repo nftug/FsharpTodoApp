@@ -5,7 +5,7 @@ open Microsoft.EntityFrameworkCore
 open FsharpTodoApp.Domain.Features.Todo.Entities
 open FsharpTodoApp.Domain.Features.Todo.Interfaces
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
-open FsharpTodoApp.Infrastructure.Persistence.Utils
+open FsharpTodoApp.Infrastructure.Persistence.Repositories
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 open FsharpTodoApp.Application.Features.Todo.Enums
 open FsharpTodoApp.Domain.Common.Entities

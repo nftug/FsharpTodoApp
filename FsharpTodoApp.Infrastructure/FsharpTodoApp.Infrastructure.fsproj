@@ -12,7 +12,7 @@
     <Compile Include="Features/Todo/DataModels/TodoDataModel.fs" />
     <Compile Include="Persistence/AppDbContext.fs" />
 
-    <Compile Include="Persistence/Utils/RepositoryHelper.fs" />
+    <Compile Include="Persistence/Repositories/RepositoryHelper.fs" />
     <Compile Include="Features/Todo/Repositories/TodoRepository.fs" />
   </ItemGroup>
 

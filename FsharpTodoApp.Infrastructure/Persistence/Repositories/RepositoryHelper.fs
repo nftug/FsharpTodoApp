@@ -1,4 +1,4 @@
-namespace FsharpTodoApp.Infrastructure.Persistence.Utils
+namespace FsharpTodoApp.Infrastructure.Persistence.Repositories
 
 open FsharpTodoApp.Infrastructure.Persistence.DataModels
 open FsharpTodoApp.Domain.Common.Entities
@@ -15,28 +15,23 @@ module RepositoryHelper =
     open Microsoft.EntityFrameworkCore
     open FsToolkit.ErrorHandling
 
-    let private loadTracked spec =
-        match spec.EntityBase.IdSet.DbId with
-        | dbId when dbId = 0L -> task { return None }
-        | dbId -> spec.Query.SingleOrDefaultAsync(fun x -> x.Id = dbId) |> Task.map Option.ofObj
-
-    let private ensureDehydrate (ctx: DbContext) spec existing =
-        match existing with
-        | Some existing ->
-            spec.Dehydrate existing
-            existing
-        | None ->
-            let newDataModel = new 'T()
-            spec.Dehydrate newDataModel
-            ctx.Add newDataModel |> ignore
-            newDataModel
-
     let save (ctx: AppDbContext) spec =
         task {
             use! tx = ctx.Database.BeginTransactionAsync()
 
-            let! tracked = loadTracked spec
-            let instance = tracked |> ensureDehydrate ctx spec
+            let! instance =
+                match spec.EntityBase |> EntityBase.ofDbId with
+                | None -> task { return None }
+                | Some dbId -> spec.Query.AsTracking().SingleAsync(fun x -> x.Id = dbId) |> Task.map Some
+                |> Task.map (function
+                    | Some existing ->
+                        spec.Dehydrate existing
+                        existing
+                    | None ->
+                        let newDataModel = new 'T()
+                        spec.Dehydrate newDataModel
+                        ctx.Add newDataModel |> ignore
+                        newDataModel)
 
             do! ctx.SaveChangesAsync() |> Task.ignore
 

@@ -39,6 +39,11 @@ module EntityBase =
 
     let isNew this = this.IdSet.DbId = 0L
 
+    let ofDbId this =
+        match this.IdSet.DbId with
+        | dbId when dbId > 0L -> Some dbId
+        | _ -> None
+
     let isDeleted this = this.DeletedAudit <> DeletedAudit.none
 
     let setDbId dbId this = { this with IdSet.DbId = dbId }

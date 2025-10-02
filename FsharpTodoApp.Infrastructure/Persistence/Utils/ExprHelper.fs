@@ -1,4 +1,4 @@
-namespace FsharpTodoApp.Infrastructure.Persistence.Utils
+namespace FsharpTodoApp.Infrastructure.Persistence.Repositories
 
 module ExprHelper =
     open Microsoft.FSharp.Linq.RuntimeHelpers
