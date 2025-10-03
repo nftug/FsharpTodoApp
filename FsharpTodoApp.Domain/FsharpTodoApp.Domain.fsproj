@@ -8,19 +8,17 @@
   <ItemGroup>
     <Compile Include="Common/Errors/AppError.fs" />
     <Compile Include="Common/Services/DateTimeProvider.fs" />
-
     <Compile Include="Common/ValueObjects/EntityIdSet.fs" />
     <Compile Include="Common/ValueObjects/UserInfo.fs" />
     <Compile Include="Common/ValueObjects/ActorRole.fs" />
     <Compile Include="Common/ValueObjects/Actor.fs" />
-
     <Compile Include="Common/ValueObjects/Permission.fs" />
     <Compile Include="Common/ValueObjects/AuditContext.fs" />
     <Compile Include="Common/ValueObjects/EntityAudit.fs" />
     <Compile Include="Common/Entities/EntityBase.fs" />
-
     <Compile Include="Common/Policies/PassThroughPermission.fs" />
     <Compile Include="Common/Policies/OwnerOnlyPermission.fs" />
+    <Compile Include="Common/Enums/ActorRoleEnum.fs" />
 
     <Compile Include="Features/User/Interfaces/IUserReferenceService.fs" />
 
@@ -34,6 +32,7 @@
     <Compile Include="Features/Todo/Policies/TodoPermissions.fs" />
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
     <Compile Include="Features/Todo/Interfaces/ITodoRepository.fs" />
+    <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
   </ItemGroup>
 
   <ItemGroup>

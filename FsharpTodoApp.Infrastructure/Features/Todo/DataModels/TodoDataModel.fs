@@ -2,7 +2,7 @@ namespace FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 
 open System
 open FsharpTodoApp.Infrastructure.Persistence.DataModels
-open FsharpTodoApp.Application.Features.Todo.Enums
+open FsharpTodoApp.Domain.Features.Todo.Enums
 
 [<Sealed>]
 type TodoDataModel() =

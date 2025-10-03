@@ -6,10 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Common/Enums/ActorRoleEnum.fs" />
     <Compile Include="Common/Dtos/CommonResponseDtos.fs" />
 
-    <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
     <Compile Include="Features/Todo/Dtos/TodoCommandDtos.fs" />
     <Compile Include="Features/Todo/Commands/CreateTodo.fs" />
     <Compile Include="Features/Todo/Commands/UpdateTodo.fs" />

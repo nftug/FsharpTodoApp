@@ -1,4 +1,4 @@
-namespace FsharpTodoApp.Application.Common.Enums
+namespace FsharpTodoApp.Domain.Common.Enums
 
 open System.Text.Json.Serialization
 open FsharpTodoApp.Domain.Common.ValueObjects

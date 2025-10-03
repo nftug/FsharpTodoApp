@@ -5,8 +5,8 @@ module UpdateTodoStatus =
     open FsharpTodoApp.Domain.Common.Errors
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
     open FsharpTodoApp.Domain.Features.Todo.Services
+    open FsharpTodoApp.Domain.Features.Todo.Enums
     open FsToolkit.ErrorHandling
-    open FsharpTodoApp.Application.Features.Todo.Enums
 
     type Dependencies =
         { Repository: ITodoRepository

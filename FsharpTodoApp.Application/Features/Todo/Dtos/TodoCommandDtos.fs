@@ -1,6 +1,6 @@
 namespace FsharpTodoApp.Application.Features.Todo.Dtos.Commands
 
-open FsharpTodoApp.Application.Features.Todo.Enums
+open FsharpTodoApp.Domain.Features.Todo.Enums
 
 type TodoCreateCommandDto =
     { Title: string
