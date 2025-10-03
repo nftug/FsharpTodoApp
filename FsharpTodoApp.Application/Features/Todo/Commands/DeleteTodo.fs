@@ -12,11 +12,11 @@ type DeleteTodo =
 module DeleteTodo =
     let private handle repo policySvc (actor, id) =
         taskResult {
-            let! entity = repo.GetById(Some actor, id) |> TaskResult.requireSome NotFoundError
+            let! entity = repo.GetTodoById(Some actor, id) |> TaskResult.requireSome NotFoundError
 
             let! updated = entity |> policySvc.BuildDeleted actor
 
-            do! repo.Save(actor, updated) |> Task.ignore
+            do! repo.SaveTodo(actor, updated) |> Task.ignore
         }
 
     let create repo policySvc = { Handle = handle repo policySvc }

@@ -12,14 +12,14 @@ type UpdateTodo =
     { Handle: (Actor * System.Guid * TodoUpdateCommandDto) -> TaskResult<unit, AppError> }
 
 module UpdateTodo =
-    let private handle (repo, userRef, policySvc) (actor, id, command: TodoUpdateCommandDto) =
+    let private handle (repo: TodoRepository, userRef, policySvc) (actor, id, command: TodoUpdateCommandDto) =
         taskResult {
-            let! entity = repo.GetById(Some actor, id) |> TaskResult.requireSome NotFoundError
+            let! entity = repo.GetTodoById(Some actor, id) |> TaskResult.requireSome NotFoundError
 
             let! assignee =
                 match command.AssigneeUserName with
                 | Some arg ->
-                    userRef.GetByUserName arg
+                    userRef.GetUserRefByUserName arg
                     |> TaskResult.requireSome (ValidationError "Could not find assignee user")
                     |> TaskResult.map Some
                 | None -> taskResult { return None }
@@ -27,7 +27,7 @@ module UpdateTodo =
             let! reviewer =
                 match command.ReviewerUserName with
                 | Some arg ->
-                    userRef.GetByUserName arg
+                    userRef.GetUserRefByUserName arg
                     |> TaskResult.requireSome (ValidationError "Could not find reviewer user")
                     |> TaskResult.map Some
                 | None -> taskResult { return None }
@@ -38,7 +38,7 @@ module UpdateTodo =
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
                     entity
 
-            do! repo.Save(actor, updated) |> Task.ignore
+            do! repo.SaveTodo(actor, updated) |> Task.ignore
         }
 
     let create repo userRef policySvc =

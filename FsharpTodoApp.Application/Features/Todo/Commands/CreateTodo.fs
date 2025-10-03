@@ -18,7 +18,7 @@ module CreateTodo =
             let! assignee =
                 match command.AssigneeUserName with
                 | Some arg ->
-                    userRef.GetByUserName arg
+                    userRef.GetUserRefByUserName arg
                     |> TaskResult.requireSome (ValidationError "Could not find assignee user")
                     |> TaskResult.map Some
                 | None -> taskResult { return None }
@@ -26,7 +26,7 @@ module CreateTodo =
             let! reviewer =
                 match command.ReviewerUserName with
                 | Some arg ->
-                    userRef.GetByUserName arg
+                    userRef.GetUserRefByUserName arg
                     |> TaskResult.requireSome (ValidationError "Could not find reviewer user")
                     |> TaskResult.map Some
                 | None -> taskResult { return None }
@@ -35,7 +35,7 @@ module CreateTodo =
                 policySvc.BuildCreated actor (command.Title, command.Description, command.DueDate, assignee, reviewer)
 
             let! created =
-                repo.Save(actor, entity)
+                repo.SaveTodo(actor, entity)
                 |> Task.map (fun x -> Ok(x.Base |> ItemCreatedResponseDto.create))
 
             return created

@@ -41,5 +41,5 @@ module TodoRepositoryImpl =
         |> Task.map (fun newBase -> { entity with Base = newBase })
 
     let create (ctx: AppDbContext) : TodoRepository =
-        { GetById = getById ctx
-          Save = save ctx }
+        { GetTodoById = getById ctx
+          SaveTodo = save ctx }

@@ -17,10 +17,15 @@
     <Compile Include="Common/ValueObjects/EntityAudit.fs" />
     <Compile Include="Common/Entities/EntityBase.fs" />
     <Compile Include="Common/Policies/PassThroughPermission.fs" />
+    <Compile Include="Common/Policies/AdminOnlyPermission.fs" />
     <Compile Include="Common/Policies/OwnerOnlyPermission.fs" />
     <Compile Include="Common/Enums/ActorRoleEnum.fs" />
 
+    <Compile Include="Features/User/Entities/UserEntity.fs" />
     <Compile Include="Features/User/Interfaces/UserReferenceService.fs" />
+    <Compile Include="Features/User/Interfaces/UserRepository.fs" />
+    <Compile Include="Features/User/Policies/UserPermissions.fs" />
+    <Compile Include="Features/User/Services/UserPolicyService.fs" />
 
     <Compile Include="Features/Todo/ValueObjects/TodoTitle.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoDescription.fs" />

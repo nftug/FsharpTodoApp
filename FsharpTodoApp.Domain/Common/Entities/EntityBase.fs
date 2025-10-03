@@ -11,15 +11,18 @@ type EntityBase =
 module EntityBase =
     open FsharpTodoApp.Domain.Common.Errors
 
-    let tryCreate ctx =
+    let tryCreateWithPublicId ctx publicId =
         match ctx.Permission.CanCreate with
         | true ->
             Ok
-                { IdSet = EntityIdSet.create ()
+                { IdSet = { DbId = 0L; PublicId = publicId }
                   CreatedAudit = CreatedAudit.create ctx
                   UpdatedAudit = UpdatedAudit.none
                   DeletedAudit = DeletedAudit.none }
         | false -> Error ForbiddenError
+
+    let tryCreate ctx =
+        tryCreateWithPublicId ctx (System.Guid.NewGuid())
 
     let tryUpdate ctx this =
         match ctx.Permission.CanUpdate with
