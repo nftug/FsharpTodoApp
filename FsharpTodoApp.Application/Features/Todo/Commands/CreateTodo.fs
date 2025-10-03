@@ -13,7 +13,7 @@ type CreateTodo =
     { Handle: (Actor * TodoCreateCommandDto) -> TaskResult<ItemCreatedResponseDto, AppError> }
 
 module CreateTodo =
-    let private handle (repo, userRef, policySvc) (actor, command: TodoCreateCommandDto) =
+    let private handle (repo, userRef, policyService) (actor, command: TodoCreateCommandDto) =
         taskResult {
             let! assignee =
                 match command.AssigneeUserName with
@@ -32,14 +32,16 @@ module CreateTodo =
                 | None -> taskResult { return None }
 
             let! entity =
-                policySvc.BuildCreated actor (command.Title, command.Description, command.DueDate, assignee, reviewer)
+                policyService.BuildCreated
+                    actor
+                    (command.Title, command.Description, command.DueDate, assignee, reviewer)
 
             let! created =
-                repo.SaveTodo(actor, entity)
+                repo.SaveTodo actor entity
                 |> Task.map (fun x -> Ok(x.Base |> ItemCreatedResponseDto.create))
 
             return created
         }
 
-    let create repo userRef policySvc =
-        { Handle = handle (repo, userRef, policySvc) }
+    let create repo userRef policyService =
+        { Handle = handle (repo, userRef, policyService) }

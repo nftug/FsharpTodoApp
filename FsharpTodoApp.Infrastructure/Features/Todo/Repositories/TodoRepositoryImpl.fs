@@ -13,7 +13,7 @@ open FsharpTodoApp.Domain.Common.Entities
 open FsToolkit.ErrorHandling
 
 module TodoRepositoryImpl =
-    let private getById (ctx: AppDbContext) (_, id: System.Guid) =
+    let private getById (ctx: AppDbContext) _ id =
         ctx.Todos
             .Where(fun x -> x.PublicId = id)
             .Select(fun e ->
@@ -32,7 +32,7 @@ module TodoRepositoryImpl =
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 
-    let private save (ctx: AppDbContext) (_, entity: TodoEntity) =
+    let private save (ctx: AppDbContext) _ entity =
         { EntityBase = entity.Base
           Query = ctx.Todos
           Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d

@@ -12,14 +12,15 @@ type UpdateTodoStatus =
     { Handle: (Actor * System.Guid * TodoUpdateStatusCommandDto) -> TaskResult<unit, AppError> }
 
 module UpdateTodoStatus =
-    let private handle (repo, policySvc) (actor, id, command: TodoUpdateStatusCommandDto) =
+    let private handle (repo, policyService) (actor, id, command: TodoUpdateStatusCommandDto) =
         taskResult {
-            let! entity = repo.GetTodoById(Some actor, id) |> TaskResult.requireSome NotFoundError
+            let! entity = repo.GetTodoById (Some actor) id |> TaskResult.requireSome NotFoundError
 
             let newStatus = TodoStatusEnum.ofDomain command.Status
-            let! updated = entity |> policySvc.BuildStatusUpdated actor newStatus
+            let! updated = entity |> policyService.BuildStatusUpdated actor newStatus
 
-            do! repo.SaveTodo(actor, updated) |> Task.ignore
+            do! repo.SaveTodo actor updated |> Task.ignore
         }
 
-    let create repo policySvc = { Handle = handle (repo, policySvc) }
+    let create repo policyService =
+        { Handle = handle (repo, policyService) }

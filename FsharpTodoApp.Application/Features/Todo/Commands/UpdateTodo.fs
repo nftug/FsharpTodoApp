@@ -12,9 +12,9 @@ type UpdateTodo =
     { Handle: (Actor * System.Guid * TodoUpdateCommandDto) -> TaskResult<unit, AppError> }
 
 module UpdateTodo =
-    let private handle (repo: TodoRepository, userRef, policySvc) (actor, id, command: TodoUpdateCommandDto) =
+    let private handle (repo: TodoRepository, userRef, policyService) (actor, id, command: TodoUpdateCommandDto) =
         taskResult {
-            let! entity = repo.GetTodoById(Some actor, id) |> TaskResult.requireSome NotFoundError
+            let! entity = repo.GetTodoById (Some actor) id |> TaskResult.requireSome NotFoundError
 
             let! assignee =
                 match command.AssigneeUserName with
@@ -33,13 +33,13 @@ module UpdateTodo =
                 | None -> taskResult { return None }
 
             let! updated =
-                policySvc.BuildUpdated
+                policyService.BuildUpdated
                     actor
                     (command.Title, command.Description, command.DueDate, assignee, reviewer)
                     entity
 
-            do! repo.SaveTodo(actor, updated) |> Task.ignore
+            do! repo.SaveTodo actor updated |> Task.ignore
         }
 
-    let create repo userRef policySvc =
-        { Handle = handle (repo, userRef, policySvc) }
+    let create repo userRef policyService =
+        { Handle = handle (repo, userRef, policyService) }

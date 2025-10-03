@@ -10,13 +10,13 @@ type DeleteTodo =
     { Handle: (Actor * System.Guid) -> TaskResult<unit, AppError> }
 
 module DeleteTodo =
-    let private handle repo policySvc (actor, id) =
+    let private handle repo policyService (actor, id) =
         taskResult {
-            let! entity = repo.GetTodoById(Some actor, id) |> TaskResult.requireSome NotFoundError
+            let! entity = repo.GetTodoById (Some actor) id |> TaskResult.requireSome NotFoundError
 
-            let! updated = entity |> policySvc.BuildDeleted actor
+            let! updated = entity |> policyService.BuildDeleted actor
 
-            do! repo.SaveTodo(actor, updated) |> Task.ignore
+            do! repo.SaveTodo actor updated |> Task.ignore
         }
 
-    let create repo policySvc = { Handle = handle repo policySvc }
+    let create repo policyService = { Handle = handle repo policyService }
