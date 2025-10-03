@@ -5,6 +5,9 @@ namespace FsharpTodoApp.Presentation
 open Microsoft.AspNetCore.Builder
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
+open FsharpTodoApp.Domain.Compositions
+open FsharpTodoApp.Application.Compositions
+open FsharpTodoApp.Infrastructure.Compositions
 
 module Program =
     let exitCode = 0
@@ -13,8 +16,14 @@ module Program =
     let main args =
 
         let builder = WebApplication.CreateBuilder(args)
+        let configuration = builder.Configuration
 
         builder.Services.AddControllers()
+
+        DomainServiceInjector.inject builder.Services
+        |> ApplicationServiceInjector.inject
+        |> InfrastructureServiceInjector.inject configuration
+        |> PresentationServiceInjector.inject
 
         let app = builder.Build()
 

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Include="Services/OidcActorFactoryService.fs" />
+    <Compile Include="Compositions/PresentationServiceInjector.fs" />
 
     <Compile Include="WeatherForecast.fs" />
     <Compile Include="Controllers/WeatherForecastController.fs" />

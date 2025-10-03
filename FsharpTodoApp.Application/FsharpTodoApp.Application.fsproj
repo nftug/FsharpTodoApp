@@ -15,10 +15,16 @@
     <Compile Include="Features/Todo/Commands/DeleteTodo.fs" />
 
     <Compile Include="Features/User/Commands/GetOrCreateUser.fs" />
+
+    <Compile Include="Compositions/ApplicationServiceInjector.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FsharpTodoApp.Domain\FsharpTodoApp.Domain.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
   </ItemGroup>
 
 </Project>

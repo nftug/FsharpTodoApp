@@ -38,10 +38,13 @@
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
     <Compile Include="Features/Todo/Interfaces/TodoRepository.fs" />
     <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
+
+    <Compile Include="Compositions/DomainServiceInjector.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FsToolkit.ErrorHandling" Version="5.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
   </ItemGroup>
 
 </Project>

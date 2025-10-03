@@ -18,6 +18,8 @@
     <Compile Include="Features/User/Repositories/UserRepositoryImpl.fs" />
 
     <Compile Include="Features/User/Services/UserReferenceServiceImpl.fs" />
+
+    <Compile Include="Compositions/InfrastructureServiceInjector.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
   </ItemGroup>
 
 </Project>
