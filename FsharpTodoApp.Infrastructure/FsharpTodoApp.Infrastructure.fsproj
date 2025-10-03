@@ -11,7 +11,6 @@
     <Compile Include="Persistence/DataModels/DataModelBase.fs" />
     <Compile Include="Features/User/DataModels/UserDataModel.fs" />
     <Compile Include="Features/Todo/DataModels/TodoDataModel.fs" />
-    <Compile Include="Persistence/AppDbContext.fs" />
 
     <Compile Include="Persistence/Repositories/RepositoryHelper.fs" />
     <Compile Include="Features/Todo/Repositories/TodoRepositoryImpl.fs" />
@@ -23,12 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FsharpTodoApp.Persistence\FsharpTodoApp.Persistence.csproj" />
     <ProjectReference Include="..\FsharpTodoApp.Domain\FsharpTodoApp.Domain.fsproj" />
     <ProjectReference Include="..\FsharpTodoApp.Application\FsharpTodoApp.Application.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
   </ItemGroup>
 

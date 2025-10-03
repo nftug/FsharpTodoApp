@@ -32,20 +32,16 @@ module UserPolicyService =
         }
 
     let private buildUpdated datetime actor (fullname, roles) this =
-        result {
-            let ctx =
-                UserUpdatePermission.create actor this |> AuditContext.create datetime actor
+        let ctx =
+            UserUpdatePermission.create actor this |> AuditContext.create datetime actor
 
-            return! UserEntity.tryUpdate ctx (fullname, roles) this
-        }
+        this |> UserEntity.tryUpdate ctx (fullname, roles)
 
     let private buildDeleted datetime actor this =
-        result {
-            let ctx =
-                UserDeletionPermission.create actor this |> AuditContext.create datetime actor
+        let ctx =
+            UserDeletionPermission.create actor this |> AuditContext.create datetime actor
 
-            return! UserEntity.tryDelete ctx this
-        }
+        this |> UserEntity.tryDelete ctx
 
     let create datetime userRef =
         { BuildCreated = buildCreated (datetime, userRef)

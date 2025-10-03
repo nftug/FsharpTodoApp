@@ -6,12 +6,11 @@ module TodoRepositoryImpl =
     open FsharpTodoApp.Domain.Features.Todo.Entities
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
     open FsharpTodoApp.Domain.Features.Todo.ValueObjects
-    open FsharpTodoApp.Infrastructure.Persistence
     open FsharpTodoApp.Infrastructure.Persistence.Repositories
     open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
-    open FsharpTodoApp.Domain.Features.Todo.Enums
     open FsharpTodoApp.Domain.Common.Entities
     open FsToolkit.ErrorHandling
+    open FsharpTodoApp.Persistence
 
     let private getTodoById (ctx: AppDbContext) _ id =
         ctx.Todos
@@ -21,14 +20,14 @@ module TodoRepositoryImpl =
                     EntityBase.hydrate
                         (e.Id, e.PublicId)
                         (e.CreatedAt, e.CreatedBy)
-                        (e.UpdatedAt, e.UpdatedBy)
-                        (e.DeletedAt, e.DeletedBy)
+                        (e.UpdatedAt |> Option.ofNullable, e.UpdatedBy |> Option.ofObj)
+                        (e.DeletedAt |> Option.ofNullable, e.DeletedBy |> Option.ofObj)
                   Title = e.Title |> TodoTitle.hydrate
-                  Description = e.Description |> TodoDescription.hydrate
-                  DueDate = e.DueDate |> TodoDueDate.hydrate
-                  Status = e.Status |> TodoStatusEnum.toDomain |> TodoStatus.hydrate
-                  Assignee = e.Assignee |> TodoAssignee.hydrate
-                  Reviewer = e.Reviewer |> TodoReviewer.hydrate })
+                  Description = e.Description |> Option.ofObj |> TodoDescription.hydrate
+                  DueDate = e.DueDate |> Option.ofNullable |> TodoDueDate.hydrate
+                  Status = e.Status |> TodoStatus.fromEnum |> TodoStatus.hydrate
+                  Assignee = e.Assignee |> Option.ofObj |> TodoAssignee.hydrate
+                  Reviewer = e.Reviewer |> Option.ofObj |> TodoReviewer.hydrate })
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 

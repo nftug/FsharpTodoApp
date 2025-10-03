@@ -4,9 +4,9 @@ module UserReferenceServiceImpl =
     open System.Linq
     open Microsoft.EntityFrameworkCore
     open FsToolkit.ErrorHandling
-    open FsharpTodoApp.Infrastructure.Persistence
     open FsharpTodoApp.Domain.Common.ValueObjects
     open FsharpTodoApp.Domain.Features.User.Interfaces
+    open FsharpTodoApp.Persistence
 
     let private getUserRefByUserName (ctx: AppDbContext) userName =
         ctx.Users

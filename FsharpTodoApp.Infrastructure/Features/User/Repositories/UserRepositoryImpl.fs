@@ -4,13 +4,13 @@ module UserRepositoryImpl =
     open System.Linq
     open Microsoft.EntityFrameworkCore
     open FsharpTodoApp.Domain.Features.User.Entities
-    open FsharpTodoApp.Infrastructure.Persistence
     open FsharpTodoApp.Domain.Common.Entities
-    open FsharpTodoApp.Domain.Common.Enums
     open FsToolkit.ErrorHandling
     open FsharpTodoApp.Infrastructure.Persistence.Repositories
     open FsharpTodoApp.Infrastructure.Features.User.DataModels
     open FsharpTodoApp.Domain.Features.User.Interfaces
+    open FsharpTodoApp.Persistence
+    open FsharpTodoApp.Domain.Common.ValueObjects
 
     let private getUserByUserName (ctx: AppDbContext) _ userName =
         ctx.Users
@@ -20,11 +20,11 @@ module UserRepositoryImpl =
                     EntityBase.hydrate
                         (e.Id, e.PublicId)
                         (e.CreatedAt, e.CreatedBy)
-                        (e.UpdatedAt, e.UpdatedBy)
-                        (e.DeletedAt, e.DeletedBy)
+                        (e.UpdatedAt |> Option.ofNullable, e.UpdatedBy |> Option.ofObj)
+                        (e.DeletedAt |> Option.ofNullable, e.DeletedBy |> Option.ofObj)
                   UserName = e.UserName
-                  FullName = e.FullName
-                  Roles = e.Roles |> List.map ActorRoleEnum.toDomain })
+                  FullName = e.FullName |> Option.ofObj
+                  Roles = e.Roles |> Array.toList |> List.map ActorRole.fromEnum })
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 

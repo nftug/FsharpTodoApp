@@ -1,8 +1,8 @@
 namespace FsharpTodoApp.Infrastructure.Persistence.Repositories
 
-open FsharpTodoApp.Infrastructure.Persistence.DataModels
 open FsharpTodoApp.Domain.Common.Entities
 open System.Linq
+open FsharpTodoApp.Persistence.DataModels
 
 type SaveSpec<'T when 'T :> DataModelBase and 'T: (new: unit -> 'T) and 'T: not struct> =
     { EntityBase: EntityBase
@@ -11,9 +11,9 @@ type SaveSpec<'T when 'T :> DataModelBase and 'T: (new: unit -> 'T) and 'T: not 
       AfterSave: ('T -> unit) option }
 
 module RepositoryHelper =
-    open FsharpTodoApp.Infrastructure.Persistence
     open Microsoft.EntityFrameworkCore
     open FsToolkit.ErrorHandling
+    open FsharpTodoApp.Persistence
 
     let save (ctx: AppDbContext) spec =
         task {

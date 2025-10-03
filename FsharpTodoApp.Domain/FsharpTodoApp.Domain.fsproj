@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common/Enums/ActorRoleEnum.fs" />
+    <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
+
     <Compile Include="Common/Errors/AppError.fs" />
     <Compile Include="Common/Services/DateTimeProvider.fs" />
     <Compile Include="Common/ValueObjects/EntityIdSet.fs" />
@@ -19,7 +22,6 @@
     <Compile Include="Common/Policies/PassThroughPermission.fs" />
     <Compile Include="Common/Policies/AdminOnlyPermission.fs" />
     <Compile Include="Common/Policies/OwnerOnlyPermission.fs" />
-    <Compile Include="Common/Enums/ActorRoleEnum.fs" />
 
     <Compile Include="Features/User/Entities/UserEntity.fs" />
     <Compile Include="Features/User/Interfaces/UserReferenceService.fs" />
@@ -37,7 +39,6 @@
     <Compile Include="Features/Todo/Policies/TodoPermissions.fs" />
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
     <Compile Include="Features/Todo/Interfaces/TodoRepository.fs" />
-    <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
 
     <Compile Include="Compositions/DomainServiceInjector.fs" />
   </ItemGroup>
@@ -46,5 +47,4 @@
     <PackageReference Include="FsToolkit.ErrorHandling" Version="5.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
   </ItemGroup>
-
 </Project>

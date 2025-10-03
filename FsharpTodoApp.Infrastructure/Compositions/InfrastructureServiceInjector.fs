@@ -6,10 +6,10 @@ module InfrastructureServiceInjector =
     open Microsoft.Extensions.Configuration
     open FsharpTodoApp.Domain.Features.User.Interfaces
     open FsharpTodoApp.Infrastructure.Features.User.Services
-    open FsharpTodoApp.Infrastructure.Persistence
     open FsharpTodoApp.Infrastructure.Features.User.Repositories
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
     open FsharpTodoApp.Infrastructure.Features.Todo.Repositories
+    open FsharpTodoApp.Persistence
 
     let inject (configuration: IConfiguration) (services: IServiceCollection) =
         services
