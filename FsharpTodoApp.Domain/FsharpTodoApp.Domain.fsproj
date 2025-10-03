@@ -20,7 +20,7 @@
     <Compile Include="Common/Policies/OwnerOnlyPermission.fs" />
     <Compile Include="Common/Enums/ActorRoleEnum.fs" />
 
-    <Compile Include="Features/User/Interfaces/IUserReferenceService.fs" />
+    <Compile Include="Features/User/Interfaces/UserReferenceService.fs" />
 
     <Compile Include="Features/Todo/ValueObjects/TodoTitle.fs" />
     <Compile Include="Features/Todo/ValueObjects/TodoDescription.fs" />
@@ -31,7 +31,7 @@
     <Compile Include="Features/Todo/Entities/TodoEntity.fs" />
     <Compile Include="Features/Todo/Policies/TodoPermissions.fs" />
     <Compile Include="Features/Todo/Services/TodoPolicyService.fs" />
-    <Compile Include="Features/Todo/Interfaces/ITodoRepository.fs" />
+    <Compile Include="Features/Todo/Interfaces/TodoRepository.fs" />
     <Compile Include="Features/Todo/Enums/TodoStatusEnum.fs" />
   </ItemGroup>
 

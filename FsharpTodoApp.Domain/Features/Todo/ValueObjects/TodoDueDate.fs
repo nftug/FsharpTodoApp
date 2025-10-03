@@ -8,7 +8,7 @@ module TodoDueDate =
 
     let tryCreate ctx datetime =
         match datetime with
-        | Some dt when dt < ctx.DateTime.UtcNow -> Validation.error "Due date cannot be in the past."
+        | Some dt when dt < ctx.DateTime.UtcNow() -> Validation.error "Due date cannot be in the past."
         | dt -> Ok(TodoDueDate dt)
 
     let hydrate date = TodoDueDate date

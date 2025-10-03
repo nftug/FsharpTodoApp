@@ -1,23 +1,25 @@
 namespace FsharpTodoApp.Application.Features.Todo.Commands
 
+open FsharpTodoApp.Application.Features.Todo.Dtos.Commands
+open FsharpTodoApp.Domain.Common.Errors
+open FsharpTodoApp.Domain.Features.Todo.Interfaces
+open FsharpTodoApp.Domain.Features.Todo.Services
+open FsharpTodoApp.Domain.Features.Todo.Enums
+open FsToolkit.ErrorHandling
+open FsharpTodoApp.Domain.Common.ValueObjects
+
+type UpdateTodoStatus =
+    { Handle: (Actor * System.Guid * TodoUpdateStatusCommandDto) -> TaskResult<unit, AppError> }
+
 module UpdateTodoStatus =
-    open FsharpTodoApp.Application.Features.Todo.Dtos.Commands
-    open FsharpTodoApp.Domain.Common.Errors
-    open FsharpTodoApp.Domain.Features.Todo.Interfaces
-    open FsharpTodoApp.Domain.Features.Todo.Services
-    open FsharpTodoApp.Domain.Features.Todo.Enums
-    open FsToolkit.ErrorHandling
-
-    type Dependencies =
-        { Repository: ITodoRepository
-          PolicyDeps: TodoPolicyService.Dependencies }
-
-    let handle deps (actor, id, command: TodoUpdateStatusCommandDto) =
+    let private handle (repo, policySvc) (actor, id, command: TodoUpdateStatusCommandDto) =
         taskResult {
-            let! entity = deps.Repository.GetById(Some actor, id) |> TaskResult.requireSome NotFoundError
+            let! entity = repo.GetById(Some actor, id) |> TaskResult.requireSome NotFoundError
 
             let newStatus = TodoStatusEnum.ofDomain command.Status
-            let! updated = entity |> TodoPolicyService.buildStatusUpdated deps.PolicyDeps actor newStatus
+            let! updated = entity |> policySvc.BuildStatusUpdated actor newStatus
 
-            do! deps.Repository.Save(actor, updated) |> Task.ignore
+            do! repo.Save(actor, updated) |> Task.ignore
         }
+
+    let create repo policySvc = { Handle = handle (repo, policySvc) }

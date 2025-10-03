@@ -6,7 +6,7 @@ open FsharpTodoApp.Domain.Common.ValueObjects
 type AuditContext =
     { Permission: Permission
       Actor: Actor
-      DateTime: IDateTimeProvider }
+      DateTime: DateTimeProvider }
 
 module AuditContext =
     let create dateTimeProvider actor permission =

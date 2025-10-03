@@ -7,7 +7,7 @@ type EntityAudit =
 module private EntityAudit =
     let create ctx =
         { UserInfo = ctx.Actor.UserInfo
-          Timestamp = ctx.DateTime.UtcNow }
+          Timestamp = ctx.DateTime.UtcNow() }
 
     let hydrate (timestamp, userName) =
         { UserInfo = { UserName = userName }

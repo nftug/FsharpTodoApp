@@ -1,8 +1,7 @@
 namespace FsharpTodoApp.Domain.Common.Services
 
-type IDateTimeProvider =
-    abstract member UtcNow: System.DateTime
+type DateTimeProvider = { UtcNow: unit -> System.DateTime }
 
-type DateTimeProvider() =
-    interface IDateTimeProvider with
-        member _.UtcNow = System.DateTime.UtcNow
+module DateTimeProvider =
+    let create () =
+        { UtcNow = fun () -> System.DateTime.UtcNow }
