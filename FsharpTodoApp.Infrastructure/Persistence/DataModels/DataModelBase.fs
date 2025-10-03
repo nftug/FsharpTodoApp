@@ -26,7 +26,7 @@ module DataModelBase =
         (tableName: string)
         (modelBuilder: ModelBuilder)
         =
-        modelBuilder.Entity<'T>().HasIndex(fun e -> e.PublicId :> Object).IsUnique()
+        modelBuilder.Entity<'T>().HasIndex(fun e -> e.PublicId :> obj).IsUnique()
         |> ignore
 
         modelBuilder.Entity<'T>().HasQueryFilter _.DeletedAt.IsNone |> ignore

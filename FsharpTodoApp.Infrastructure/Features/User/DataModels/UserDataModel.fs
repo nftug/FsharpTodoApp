@@ -20,6 +20,12 @@ module UserDataModel =
 
         modelBuilder
             .Entity<UserDataModel>()
+            .HasIndex(fun x -> x.UserName :> obj)
+            .IsUnique()
+        |> ignore
+
+        modelBuilder
+            .Entity<UserDataModel>()
             .Property(fun x -> x.Roles)
             .HasConversion(
                 new ValueConverter<ActorRoleEnum list, string>(
