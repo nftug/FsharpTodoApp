@@ -3,6 +3,9 @@ namespace FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 open System
 open FsharpTodoApp.Infrastructure.Persistence.DataModels
 open FsharpTodoApp.Domain.Features.Todo.Enums
+open FsharpTodoApp.Domain.Features.Todo.Entities
+open FsharpTodoApp.Domain.Features.Todo.ValueObjects
+open Microsoft.EntityFrameworkCore.Storage.ValueConversion
 
 [<Sealed>]
 type TodoDataModel() =
@@ -16,11 +19,15 @@ type TodoDataModel() =
     member val Reviewer: string option = None with get, set
 
 module TodoDataModel =
-    open FsharpTodoApp.Domain.Features.Todo.Entities
-    open FsharpTodoApp.Domain.Features.Todo.ValueObjects
-
     let onModelCreating modelBuilder =
         DataModelBase.onModelCreating<TodoDataModel> "Todos" modelBuilder
+
+        modelBuilder.Entity<TodoDataModel>()
+            .Property(fun x -> x.Status)
+            .HasConversion(new ValueConverter<TodoStatusEnum, string>(
+                (fun v -> v.ToString()),
+                (fun v -> Enum.Parse<TodoStatusEnum> v)
+            )) |> ignore
 
     let dehydrate (dataModel: TodoDataModel) (domain: TodoEntity) =
         domain.Base |> DataModelBase.dehydrate dataModel

@@ -2,6 +2,8 @@ namespace FsharpTodoApp.Infrastructure.Persistence.DataModels
 
 open System
 open System.ComponentModel.DataAnnotations
+open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Common.Entities
 open Microsoft.EntityFrameworkCore
 
 [<AbstractClass>]
@@ -20,9 +22,6 @@ type DataModelBase() =
     member val DeletedBy: string option = None with get, set
 
 module DataModelBase =
-    open FsharpTodoApp.Domain.Common.ValueObjects
-    open FsharpTodoApp.Domain.Common.Entities
-
     let onModelCreating<'T when 'T :> DataModelBase and 'T: not struct>
         (tableName: string)
         (modelBuilder: ModelBuilder)
