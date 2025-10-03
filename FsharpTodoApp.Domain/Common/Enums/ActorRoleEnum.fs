@@ -16,7 +16,7 @@ module ActorRoleEnum =
         | Manager -> ActorRoleEnum.Manager
         | Admin -> ActorRoleEnum.Admin
 
-    let ofDomain =
+    let toDomain =
         function
         | ActorRoleEnum.User -> User
         | ActorRoleEnum.Manager -> Manager

@@ -2,6 +2,7 @@ namespace FsharpTodoApp.Infrastructure.Persistence
 
 open Microsoft.EntityFrameworkCore
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
+open FsharpTodoApp.Infrastructure.Features.User.DataModels
 
 type AppDbContext(options) =
     inherit DbContext(options)
@@ -15,6 +16,10 @@ type AppDbContext(options) =
     [<DefaultValue>]
     val mutable Todos: DbSet<TodoDataModel>
 
+    [<DefaultValue>]
+    val mutable Users: DbSet<UserDataModel>
+
     override _.OnModelCreating modelBuilder =
         TodoDataModel.onModelCreating modelBuilder
+        UserDataModel.onModelCreating modelBuilder
         base.OnModelCreating modelBuilder

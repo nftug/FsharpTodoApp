@@ -16,7 +16,7 @@ module UpdateTodoStatus =
         taskResult {
             let! entity = repo.GetTodoById (Some actor) id |> TaskResult.requireSome NotFoundError
 
-            let newStatus = TodoStatusEnum.ofDomain command.Status
+            let newStatus = TodoStatusEnum.toDomain command.Status
             let! updated = entity |> policyService.BuildStatusUpdated actor newStatus
 
             do! repo.SaveTodo actor updated |> Task.ignore

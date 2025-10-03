@@ -1,19 +1,19 @@
 namespace FsharpTodoApp.Infrastructure.Features.Todo.Repositories
 
-open System.Linq
-open Microsoft.EntityFrameworkCore
-open FsharpTodoApp.Domain.Features.Todo.Entities
-open FsharpTodoApp.Domain.Features.Todo.Interfaces
-open FsharpTodoApp.Domain.Features.Todo.ValueObjects
-open FsharpTodoApp.Infrastructure.Persistence
-open FsharpTodoApp.Infrastructure.Persistence.Repositories
-open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
-open FsharpTodoApp.Domain.Features.Todo.Enums
-open FsharpTodoApp.Domain.Common.Entities
-open FsToolkit.ErrorHandling
-
 module TodoRepositoryImpl =
-    let private getById (ctx: AppDbContext) _ id =
+    open System.Linq
+    open Microsoft.EntityFrameworkCore
+    open FsharpTodoApp.Domain.Features.Todo.Entities
+    open FsharpTodoApp.Domain.Features.Todo.Interfaces
+    open FsharpTodoApp.Domain.Features.Todo.ValueObjects
+    open FsharpTodoApp.Infrastructure.Persistence
+    open FsharpTodoApp.Infrastructure.Persistence.Repositories
+    open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
+    open FsharpTodoApp.Domain.Features.Todo.Enums
+    open FsharpTodoApp.Domain.Common.Entities
+    open FsToolkit.ErrorHandling
+
+    let private getTodoById (ctx: AppDbContext) _ id =
         ctx.Todos
             .Where(fun x -> x.PublicId = id)
             .Select(fun e ->
@@ -26,13 +26,13 @@ module TodoRepositoryImpl =
                   Title = e.Title |> TodoTitle.hydrate
                   Description = e.Description |> TodoDescription.hydrate
                   DueDate = e.DueDate |> TodoDueDate.hydrate
-                  Status = e.Status |> TodoStatusEnum.ofDomain |> TodoStatus.hydrate
+                  Status = e.Status |> TodoStatusEnum.toDomain |> TodoStatus.hydrate
                   Assignee = e.Assignee |> TodoAssignee.hydrate
                   Reviewer = e.Reviewer |> TodoReviewer.hydrate })
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 
-    let private save (ctx: AppDbContext) _ entity =
+    let private saveTodo (ctx: AppDbContext) _ entity =
         { EntityBase = entity.Base
           Query = ctx.Todos
           Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d
@@ -41,5 +41,5 @@ module TodoRepositoryImpl =
         |> Task.map (fun newBase -> { entity with Base = newBase })
 
     let create (ctx: AppDbContext) : TodoRepository =
-        { GetTodoById = getById ctx
-          SaveTodo = save ctx }
+        { GetTodoById = getTodoById ctx
+          SaveTodo = saveTodo ctx }
