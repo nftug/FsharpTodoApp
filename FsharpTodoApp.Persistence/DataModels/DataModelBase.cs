@@ -15,7 +15,6 @@ public abstract class DataModelBase
     public string? UpdatedBy { get; set; }
     public string? DeletedBy { get; set; }
 
-
     public static void OnModelCreating<T>(ModelBuilder modelBuilder, string tableName)
         where T : DataModelBase
     {
