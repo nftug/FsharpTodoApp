@@ -1,7 +1,7 @@
 namespace FsharpTodoApp.Application.Features.Todo.Commands
 
 open FsharpTodoApp.Application.Common.Dtos
-open FsharpTodoApp.Application.Features.Todo.Dtos.Commands
+open FsharpTodoApp.Application.Features.Todo.Dtos
 open FsharpTodoApp.Domain.Common.Errors
 open FsharpTodoApp.Domain.Features.Todo.Interfaces
 open FsharpTodoApp.Domain.Features.Todo.Services

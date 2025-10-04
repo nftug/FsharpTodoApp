@@ -9,10 +9,15 @@
     <Compile Include="Common/Dtos/CommonResponseDtos.fs" />
 
     <Compile Include="Features/Todo/Dtos/TodoCommandDtos.fs" />
+    <Compile Include="Features/Todo/Dtos/TodoResponseDtos.fs" />
+    <Compile Include="Features/Todo/Dtos/TodoQueryDtos.fs" />
+    <Compile Include="Features/Todo/Interfaces/TodoQueryService.fs" />
     <Compile Include="Features/Todo/Commands/CreateTodo.fs" />
     <Compile Include="Features/Todo/Commands/UpdateTodo.fs" />
     <Compile Include="Features/Todo/Commands/UpdateTodoStatus.fs" />
     <Compile Include="Features/Todo/Commands/DeleteTodo.fs" />
+    <Compile Include="Features/Todo/Queries/GetTodoDetails.fs" />
+    <Compile Include="Features/Todo/Queries/QueryTodos.fs" />
 
     <Compile Include="Features/User/Commands/GetOrCreateUser.fs" />
 

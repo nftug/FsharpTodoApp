@@ -1,4 +1,4 @@
-namespace FsharpTodoApp.Application.Features.Todo.Dtos.Commands
+namespace FsharpTodoApp.Application.Features.Todo.Dtos
 
 open FsharpTodoApp.Domain.Features.Todo.Enums
 

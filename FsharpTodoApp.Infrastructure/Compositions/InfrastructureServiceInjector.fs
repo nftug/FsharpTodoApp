@@ -10,6 +10,8 @@ module InfrastructureServiceInjector =
     open FsharpTodoApp.Domain.Features.Todo.Interfaces
     open FsharpTodoApp.Infrastructure.Features.Todo.Repositories
     open FsharpTodoApp.Persistence
+    open FsharpTodoApp.Application.Features.Todo.Interfaces
+    open FsharpTodoApp.Infrastructure.Features.Todo.QueryServices
 
     let inject (configuration: IConfiguration) (services: IServiceCollection) =
         services
@@ -23,6 +25,7 @@ module InfrastructureServiceInjector =
                 sp.GetRequiredService<AppDbContext>() |> UserReferenceServiceImpl.create)
             .AddScoped<UserRepository>(fun sp -> sp.GetRequiredService<AppDbContext>() |> UserRepositoryImpl.create)
             .AddScoped<TodoRepository>(fun sp -> sp.GetRequiredService<AppDbContext>() |> TodoRepositoryImpl.create)
+            .AddScoped<TodoQueryService>(fun sp -> sp.GetRequiredService<AppDbContext>() |> TodoQueryServiceImpl.create)
         |> ignore
 
         services

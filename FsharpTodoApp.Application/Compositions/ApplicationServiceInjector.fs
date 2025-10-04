@@ -8,6 +8,8 @@ module ApplicationServiceInjector =
     open FsharpTodoApp.Application.Features.Todo.Commands
     open FsharpTodoApp.Application.Features.User.Commands
     open FsharpTodoApp.Domain.Features.User.Services
+    open FsharpTodoApp.Application.Features.Todo.Queries
+    open FsharpTodoApp.Application.Features.Todo.Interfaces
 
     let inject (services: IServiceCollection) =
         services
@@ -33,6 +35,12 @@ module ApplicationServiceInjector =
                 let repo = sp.GetRequiredService<TodoRepository>()
                 let policyService = sp.GetRequiredService<TodoPolicyService>()
                 DeleteTodo.create repo policyService)
+            .AddScoped<GetTodoDetails>(fun sp ->
+                let queryService = sp.GetRequiredService<TodoQueryService>()
+                GetTodoDetails.create queryService)
+            .AddScoped<QueryTodos>(fun sp ->
+                let queryService = sp.GetRequiredService<TodoQueryService>()
+                QueryTodos.create queryService)
         |> ignore
 
         services

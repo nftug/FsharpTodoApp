@@ -4,7 +4,7 @@ open FsharpTodoApp.Domain.Common.Errors
 open FsharpTodoApp.Domain.Features.Todo.Interfaces
 open FsharpTodoApp.Domain.Features.Todo.Services
 open FsharpTodoApp.Domain.Features.User.Interfaces
-open FsharpTodoApp.Application.Features.Todo.Dtos.Commands
+open FsharpTodoApp.Application.Features.Todo.Dtos
 open FsToolkit.ErrorHandling
 open FsharpTodoApp.Domain.Common.ValueObjects
 
