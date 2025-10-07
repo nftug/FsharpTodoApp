@@ -11,7 +11,7 @@ module Actor =
 
     let isUser (userInfo: UserInfo) (actor: Actor) : bool = userInfo = actor.UserInfo
 
-    let systemActor =
+    let systemActor: Actor =
         { UserInfo = { UserName = "system" }
           UserDbId = 0L
           Roles = [ Admin ] }

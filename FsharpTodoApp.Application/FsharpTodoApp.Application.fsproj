@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Common/Utils/QueryParamsHelper.fs" />
     <Compile Include="Common/Dtos/CommonResponseDtos.fs" />
 
     <Compile Include="Features/Todo/Dtos/TodoCommandDtos.fs" />

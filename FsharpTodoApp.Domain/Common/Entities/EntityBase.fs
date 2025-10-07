@@ -1,6 +1,8 @@
 namespace FsharpTodoApp.Domain.Common.Entities
 
+open System
 open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Common.Errors
 
 type EntityBase =
     { IdSet: EntityIdSet
@@ -9,9 +11,7 @@ type EntityBase =
       DeletedAudit: DeletedAudit }
 
 module EntityBase =
-    open FsharpTodoApp.Domain.Common.Errors
-
-    let tryCreateWithPublicId ctx publicId =
+    let tryCreateWithPublicId (ctx: AuditContext) (publicId: Guid) : Result<EntityBase, AppError> =
         match ctx.Permission.CanCreate with
         | true ->
             Ok
@@ -21,10 +21,10 @@ module EntityBase =
                   DeletedAudit = DeletedAudit.none }
         | false -> Error ForbiddenError
 
-    let tryCreate ctx =
+    let tryCreate (ctx: AuditContext) : Result<EntityBase, AppError> =
         tryCreateWithPublicId ctx (System.Guid.NewGuid())
 
-    let tryUpdate ctx this =
+    let tryUpdate (ctx: AuditContext) (this: EntityBase) : Result<EntityBase, AppError> =
         match ctx.Permission.CanUpdate with
         | true ->
             Ok
@@ -32,7 +32,7 @@ module EntityBase =
                     UpdatedAudit = UpdatedAudit.create ctx }
         | false -> Error ForbiddenError
 
-    let tryDelete ctx this =
+    let tryDelete (ctx: AuditContext) (this: EntityBase) : Result<EntityBase, AppError> =
         match ctx.Permission.CanDelete with
         | true ->
             Ok
@@ -40,18 +40,23 @@ module EntityBase =
                     DeletedAudit = DeletedAudit.create ctx }
         | false -> Error ForbiddenError
 
-    let isNew this = this.IdSet.DbId = 0L
+    let isNew (this: EntityBase) : bool = this.IdSet.DbId = 0L
 
-    let ofDbId this =
+    let ofDbId (this: EntityBase) : Option<int64> =
         match this.IdSet.DbId with
         | dbId when dbId > 0L -> Some dbId
         | _ -> None
 
-    let isDeleted this = this.DeletedAudit <> DeletedAudit.none
+    let isDeleted (this: EntityBase) : bool = this.DeletedAudit <> DeletedAudit.none
 
-    let setDbId dbId this = { this with IdSet.DbId = dbId }
+    let setDbId (dbId: int64) (this: EntityBase) : EntityBase = { this with IdSet.DbId = dbId }
 
-    let hydrate (dbId, publicId) (createdAt, createdBy) (updatedAt, updatedBy) (deletedAt, deletedBy) =
+    let hydrate
+        (dbId: int64, publicId: Guid)
+        (createdAt: DateTime, createdBy: string)
+        (updatedAt: DateTime option, updatedBy: string option)
+        (deletedAt: DateTime option, deletedBy: string option)
+        : EntityBase =
         { IdSet = { DbId = dbId; PublicId = publicId }
           CreatedAudit = CreatedAudit.hydrate (createdAt, createdBy)
           UpdatedAudit = UpdatedAudit.hydrate (updatedAt, updatedBy)

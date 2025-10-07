@@ -4,7 +4,7 @@ open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Common.Entities
 
 module OwnerOnlyPermission =
-    let create actor entityBase =
+    let create (actor: Actor) (entityBase: EntityBase) : Permission =
         { CanCreate = true
           CanUpdate =
             actor |> Actor.isAtLeast Admin

@@ -2,7 +2,6 @@ namespace FsharpTodoApp.Presentation.Endpoints
 
 open System
 open Giraffe
-open FsharpTodoApp.Domain.Common.Errors
 open FsharpTodoApp.Application.Features.Todo.Commands
 open FsharpTodoApp.Application.Features.Todo.Dtos
 open FsharpTodoApp.Application.Features.Todo.Queries
@@ -16,14 +15,9 @@ module TodoHandlers =
                 | Error error -> return! HttpContextUtils.respondAppError error next ctx
                 | Ok actor ->
                     let useCase = HttpContextUtils.getService<QueryTodos> ctx
-
-                    let queryDto =
-                        TodoQueryDto.bindQueryParams (
-                            ctx.Request.Query |> Seq.map (fun kvp -> kvp.Key, kvp.Value.ToString()) |> dict
-                        )
-
-                    let! response = useCase.Handle(Some actor, queryDto)
-                    return! json response next ctx
+                    let queryDto = TodoQueryDto.bindQueryParams ctx
+                    let! result = useCase.Handle(Some actor, queryDto)
+                    return! json result next ctx
             }
 
     let private getTodoDetailsHandler (todoId: Guid) : HttpHandler =
@@ -34,10 +28,7 @@ module TodoHandlers =
                 | Ok actor ->
                     let useCase = HttpContextUtils.getService<GetTodoDetails> ctx
                     let! result = useCase.Handle(Some actor, todoId)
-
-                    match result with
-                    | Some dto -> return! json dto next ctx
-                    | None -> return! HttpContextUtils.respondAppError NotFoundError next ctx
+                    return! HttpContextUtils.handleResult result json next ctx
             }
 
     let private createTodoHandler: HttpHandler =

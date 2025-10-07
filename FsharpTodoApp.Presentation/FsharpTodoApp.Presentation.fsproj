@@ -10,8 +10,6 @@
     <Compile Include="Compositions/PresentationServiceInjector.fs" />
     <Compile Include="Endpoints/TodoHandlers.fs" />
 
-    <Compile Include="WeatherForecast.fs" />
-    <Compile Include="Controllers/WeatherForecastController.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

@@ -58,4 +58,4 @@ module OidcActorFactoryService =
                 | _ -> return None
         }
 
-    let create (useCase: GetOrCreateUser) = { Handle = getOrCreateActor useCase }
+    let create (useCase: GetOrCreateUser) : OidcActorFactoryService = { Handle = getOrCreateActor useCase }

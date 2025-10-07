@@ -9,7 +9,7 @@ type AuditContext =
       DateTime: DateTimeProvider }
 
 module AuditContext =
-    let create dateTimeProvider actor permission =
+    let create (dateTimeProvider: DateTimeProvider) (actor: Actor) (permission: Permission) : AuditContext =
         { Permission = permission
           Actor = actor
           DateTime = dateTimeProvider }

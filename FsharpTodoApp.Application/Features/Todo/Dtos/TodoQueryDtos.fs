@@ -1,7 +1,9 @@
 namespace FsharpTodoApp.Application.Features.Todo.Dtos
 
+open System
 open FsharpTodoApp.Domain.Features.Todo.Enums
-open System.Collections.Generic
+open Microsoft.AspNetCore.Http
+open FsharpTodoApp.Application.Common.Utils
 
 type TodoQueryDto =
     { Search: string option
@@ -22,33 +24,28 @@ module TodoQueryDto =
             Page = page
             PageSize = pageSize }
 
-    let bindQueryParams (queryParams: IDictionary<string, string>) : TodoQueryDto =
-        let tryGetValue key =
-            match queryParams.TryGetValue key with
-            | true, value when not (System.String.IsNullOrWhiteSpace value) -> Some value
-            | _ -> None
-
-        let search = tryGetValue "search"
+    let bindQueryParams (ctx: HttpContext) : TodoQueryDto =
+        let search = QueryParamsHelper.tryGetQueryParam ctx "search"
 
         let status =
-            tryGetValue "status"
+            QueryParamsHelper.tryGetQueryParam ctx "status"
             |> Option.bind (fun s ->
-                match System.Enum.TryParse<TodoStatusEnum>(s, true) with
+                match Enum.TryParse<TodoStatusEnum>(s, true) with
                 | true, enumValue -> Some enumValue
                 | _ -> None)
 
         let page =
-            tryGetValue "page"
+            QueryParamsHelper.tryGetQueryParam ctx "page"
             |> Option.bind (fun s ->
-                match System.Int32.TryParse(s) with
+                match Int32.TryParse s with
                 | true, intValue -> Some intValue
                 | _ -> None)
             |> Option.defaultValue 1
 
         let pageSize =
-            tryGetValue "pageSize"
+            QueryParamsHelper.tryGetQueryParam ctx "pageSize"
             |> Option.bind (fun s ->
-                match System.Int32.TryParse(s) with
+                match Int32.TryParse s with
                 | true, intValue -> Some intValue
                 | _ -> None)
             |> Option.defaultValue 10

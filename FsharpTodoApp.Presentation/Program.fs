@@ -68,7 +68,6 @@ module Program =
         app.UseAuthentication()
         app.UseAuthorization()
         app.UseGiraffe(choose [ TodoHandlers.routes ])
-        app.MapControllers()
 
         app.Run()
 
