@@ -6,7 +6,7 @@ open FsharpTodoApp.Persistence.DataModels
 open FsharpTodoApp.Domain.Common.ValueObjects
 
 module UserDataModel =
-    let dehydrate (dataModel: UserDataModel) (entity: UserEntity) =
+    let dehydrate (dataModel: UserDataModel) (entity: UserEntity) : unit =
         entity.Base |> DataModelBase.dehydrate dataModel
 
         dataModel.UserName <- entity.UserName

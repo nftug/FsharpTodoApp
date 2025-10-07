@@ -14,8 +14,9 @@ module RepositoryHelper =
     open Microsoft.EntityFrameworkCore
     open FsToolkit.ErrorHandling
     open FsharpTodoApp.Persistence
+    open System.Threading.Tasks
 
-    let save (ctx: AppDbContext) spec =
+    let save (ctx: AppDbContext) (spec: SaveSpec<'T>) : Task<EntityBase> =
         task {
             use! tx = ctx.Database.BeginTransactionAsync()
 

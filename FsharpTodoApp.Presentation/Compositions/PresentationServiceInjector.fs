@@ -5,7 +5,7 @@ module PresentationServiceInjector =
     open FsharpTodoApp.Presentation.Services
     open FsharpTodoApp.Application.Features.User.Commands
 
-    let inject (services: IServiceCollection) =
+    let inject (services: IServiceCollection) : IServiceCollection =
         services.AddScoped<OidcActorFactoryService>(fun sp ->
             sp.GetRequiredService<GetOrCreateUser>() |> OidcActorFactoryService.create)
         |> ignore

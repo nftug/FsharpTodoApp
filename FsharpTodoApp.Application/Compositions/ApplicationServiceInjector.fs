@@ -11,7 +11,7 @@ module ApplicationServiceInjector =
     open FsharpTodoApp.Application.Features.Todo.Queries
     open FsharpTodoApp.Application.Features.Todo.Interfaces
 
-    let inject (services: IServiceCollection) =
+    let inject (services: IServiceCollection) : IServiceCollection =
         services
             .AddScoped<GetOrCreateUser>(fun sp ->
                 let repo = sp.GetRequiredService<UserRepository>()

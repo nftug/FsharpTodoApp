@@ -2,6 +2,7 @@ namespace FsharpTodoApp.Domain.Features.User.Entities
 
 open FsharpTodoApp.Domain.Common.Entities
 open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Common.Errors
 
 type UserEntity =
     { Base: EntityBase
@@ -12,7 +13,10 @@ type UserEntity =
 module UserEntity =
     open FsToolkit.ErrorHandling
 
-    let tryCreate ctx (username, userId, fullname, roles) =
+    let tryCreate
+        (ctx: AuditContext)
+        (username: string, userId: System.Guid, fullname: string option, roles: ActorRole list)
+        : Result<UserEntity, AppError> =
         result {
             let! entityBase = EntityBase.tryCreateWithPublicId ctx userId
 
@@ -23,7 +27,11 @@ module UserEntity =
                   Roles = roles }
         }
 
-    let tryUpdate ctx (fullname, roles) this =
+    let tryUpdate
+        (ctx: AuditContext)
+        (fullname: string option, roles: ActorRole list)
+        (this: UserEntity)
+        : Result<UserEntity, AppError> =
         result {
             let! entityBase = EntityBase.tryUpdate ctx this.Base
 
@@ -34,14 +42,14 @@ module UserEntity =
                     Roles = roles }
         }
 
-    let tryDelete ctx this =
+    let tryDelete (ctx: AuditContext) (this: UserEntity) : Result<UserEntity, AppError> =
         result {
             let! entityBase = EntityBase.tryDelete ctx this.Base
 
             return { this with Base = entityBase }
         }
 
-    let toActor this =
+    let toActor (this: UserEntity) : Actor =
         { UserInfo = { UserName = this.UserName }
           UserDbId = this.Base.IdSet.DbId
           Roles = this.Roles }

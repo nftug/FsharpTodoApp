@@ -13,7 +13,7 @@ module InfrastructureServiceInjector =
     open FsharpTodoApp.Application.Features.Todo.Interfaces
     open FsharpTodoApp.Infrastructure.Features.Todo.QueryServices
 
-    let inject (configuration: IConfiguration) (services: IServiceCollection) =
+    let inject (configuration: IConfiguration) (services: IServiceCollection) : IServiceCollection =
         services
             .AddDbContext<AppDbContext>(fun options ->
                 options.UseSqlite(

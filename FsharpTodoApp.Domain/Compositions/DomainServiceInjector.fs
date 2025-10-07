@@ -7,7 +7,7 @@ module DomainServiceInjector =
     open FsharpTodoApp.Domain.Features.User.Interfaces
     open FsharpTodoApp.Domain.Features.User.Services
 
-    let inject (services: IServiceCollection) =
+    let inject (services: IServiceCollection) : IServiceCollection =
         services
             .AddSingleton<DateTimeProvider>(fun _ -> DateTimeProvider.create ())
             .AddScoped<UserPolicyService>(fun sp ->

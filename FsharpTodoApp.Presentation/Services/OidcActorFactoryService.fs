@@ -22,7 +22,7 @@ module OidcActorFactoryService =
         | "admin" -> Admin
         | _ -> User
 
-    let private getOrCreateActor (getOrCreate: GetOrCreateUser) (ctx: HttpContext) =
+    let private getOrCreateActor (useCase: GetOrCreateUser) (ctx: HttpContext) =
         taskResult {
             if not ctx.User.Identity.IsAuthenticated then
                 return None
@@ -53,9 +53,9 @@ module OidcActorFactoryService =
                 // When userId or username is missing, we cannot create an actor
                 match userId, username with
                 | Some id, Some name ->
-                    let! user = getOrCreate.Handle(name, id, fullname, roles)
+                    let! user = useCase.Handle(name, id, fullname, roles)
                     return user |> UserEntity.toActor |> Some
                 | _ -> return None
         }
 
-    let create useCase = { Handle = getOrCreateActor useCase }
+    let create (useCase: GetOrCreateUser) = { Handle = getOrCreateActor useCase }

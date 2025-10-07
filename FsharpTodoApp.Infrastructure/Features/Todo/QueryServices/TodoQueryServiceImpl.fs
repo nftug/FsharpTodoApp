@@ -31,10 +31,10 @@ module TodoQueryServiceImpl =
 
     let private queryTodos (ctx: AppDbContext) _ (query: TodoQueryDto) =
         task {
-            let mutable queryable =
+            let queryable =
                 ctx.Todos.Where(fun x -> query.Status = None || x.Status = query.Status.Value)
 
-            queryable <-
+            let queryable =
                 match query.Search with
                 | None -> queryable
                 | Some search ->

@@ -43,5 +43,5 @@ module CreateTodo =
             return created
         }
 
-    let create repo userRef policyService =
+    let create (repo: TodoRepository) (userRef: UserReferenceService) (policyService: TodoPolicyService) : CreateTodo =
         { Handle = handle (repo, userRef, policyService) }

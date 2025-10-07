@@ -6,10 +6,10 @@ type Actor =
       Roles: ActorRole list }
 
 module Actor =
-    let isAtLeast role actor =
+    let isAtLeast (role: ActorRole) (actor: Actor) : bool =
         actor.Roles |> List.exists (ActorRole.isAtLeast role)
 
-    let isUser userInfo actor = userInfo = actor.UserInfo
+    let isUser (userInfo: UserInfo) (actor: Actor) : bool = userInfo = actor.UserInfo
 
     let systemActor =
         { UserInfo = { UserName = "system" }

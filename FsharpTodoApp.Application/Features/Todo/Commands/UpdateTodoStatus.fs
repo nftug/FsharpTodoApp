@@ -23,5 +23,5 @@ module UpdateTodoStatus =
             do! repo.SaveTodo actor updated |> Task.ignore
         }
 
-    let create repo policyService =
+    let create (repo: TodoRepository) (policyService: TodoPolicyService) : UpdateTodoStatus =
         { Handle = handle (repo, policyService) }

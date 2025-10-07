@@ -17,7 +17,7 @@ type PaginatedResponseDto<'T> =
       HasPreviousPage: bool }
 
 module PaginatedResponseDto =
-    let create (items: 'T list) totalCount currentPage pageSize =
+    let create (items: 'T list) (totalCount: int) (currentPage: int) (pageSize: int) : PaginatedResponseDto<'T> =
         let totalPages = (totalCount + pageSize - 1) / pageSize
 
         { Items = items

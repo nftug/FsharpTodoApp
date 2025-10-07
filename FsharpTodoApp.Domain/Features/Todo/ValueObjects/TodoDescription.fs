@@ -7,11 +7,11 @@ module TodoDescription =
 
     let maxLen = 500
 
-    let tryCreate (text: string option) =
+    let tryCreate (text: string option) : Result<TodoDescription, AppError> =
         match text with
         | Some s when s.Length > maxLen -> Validation.errorf "Description cannot be longer than %d characters." maxLen
         | v -> Ok(TodoDescription v)
 
-    let hydrate text = TodoDescription text
+    let hydrate (text: string option) : TodoDescription = TodoDescription text
 
-    let value (TodoDescription current) = current
+    let value (TodoDescription current: TodoDescription) : string option = current

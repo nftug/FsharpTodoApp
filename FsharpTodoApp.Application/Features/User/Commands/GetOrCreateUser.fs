@@ -29,5 +29,5 @@ module GetOrCreateUser =
                     return user
         }
 
-    let create repo policyService =
+    let create (repo: UserRepository) (policyService: UserPolicyService) : GetOrCreateUser =
         { Handle = handle (repo, policyService) }

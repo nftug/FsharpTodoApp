@@ -19,7 +19,7 @@ type LogicalOperator =
 module QueryExpressionHelper =
     open Microsoft.EntityFrameworkCore.Query
 
-    let detectProvider (context: DbContext) =
+    let detectProvider (context: DbContext) : DatabaseProvider =
         let providerName =
             try
                 context.Database.ProviderName

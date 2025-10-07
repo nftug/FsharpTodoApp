@@ -42,7 +42,7 @@ module TodoPolicyService =
 
         entity |> TodoEntity.tryDelete ctx
 
-    let create (datetime: DateTimeProvider) =
+    let create (datetime: DateTimeProvider) : TodoPolicyService =
         { BuildCreated = buildCreated datetime
           BuildUpdated = buildUpdated datetime
           BuildStatusUpdated = buildStatusUpdated datetime

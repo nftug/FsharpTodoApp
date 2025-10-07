@@ -10,6 +10,6 @@ type GetTodoDetails =
 module GetTodoDetails =
     open FsharpTodoApp.Application.Features.Todo.Interfaces
 
-    let private handle (queryService: TodoQueryService) (actor, id) = queryService.GetTodoById actor id
+    let private handle queryService (actor, id) = queryService.GetTodoById actor id
 
-    let create (queryService: TodoQueryService) = { Handle = handle queryService }
+    let create (queryService: TodoQueryService) : GetTodoDetails = { Handle = handle queryService }

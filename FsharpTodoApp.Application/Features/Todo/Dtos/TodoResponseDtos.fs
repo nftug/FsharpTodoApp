@@ -27,5 +27,10 @@ type TodoListItemResponseDto =
 type TodoPaginatedResponseDto = PaginatedResponseDto<TodoListItemResponseDto>
 
 module TodoPaginatedResponseDto =
-    let create (items: TodoListItemResponseDto list) totalCount page pageSize =
+    let create
+        (items: TodoListItemResponseDto list)
+        (totalCount: int)
+        (page: int)
+        (pageSize: int)
+        : TodoPaginatedResponseDto =
         PaginatedResponseDto.create items totalCount page pageSize

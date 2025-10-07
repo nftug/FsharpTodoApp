@@ -5,13 +5,13 @@ open FsharpTodoApp.Domain.Common.Entities
 open FsharpTodoApp.Persistence.DataModels
 
 module DataModelBase =
-    let dehydrateDeletionState (dataModel: DataModelBase) (deletedAudit: DeletedAudit) =
+    let dehydrateDeletionState (dataModel: DataModelBase) (deletedAudit: DeletedAudit) : unit =
         DeletedAudit.value deletedAudit
         |> Option.iter (fun audit ->
             dataModel.DeletedAt <- Some audit.Timestamp |> Option.toNullable
             dataModel.DeletedBy <- Some audit.UserInfo.UserName |> Option.defaultValue null)
 
-    let dehydrate (dataModel: DataModelBase) (entityBase: EntityBase) =
+    let dehydrate (dataModel: DataModelBase) (entityBase: EntityBase) : unit =
         dataModel.Id <- entityBase.IdSet.DbId
         dataModel.PublicId <- entityBase.IdSet.PublicId
 

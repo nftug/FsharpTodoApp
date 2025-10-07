@@ -6,6 +6,7 @@ open FsharpTodoApp.Domain.Features.User.Entities
 open FsharpTodoApp.Domain.Common.Errors
 open FsharpTodoApp.Domain.Features.User.Interfaces
 open FsharpTodoApp.Domain.Features.User.Policies
+open FsharpTodoApp.Domain.Common.Services
 open System
 
 type UserCreateArgs = string * Guid * string option * ActorRole list
@@ -43,7 +44,7 @@ module UserPolicyService =
 
         this |> UserEntity.tryDelete ctx
 
-    let create datetime userRef =
+    let create (datetime: DateTimeProvider) (userRef: UserReferenceService) : UserPolicyService =
         { BuildCreated = buildCreated (datetime, userRef)
           BuildUpdated = buildUpdated datetime
           BuildDeleted = buildDeleted datetime }

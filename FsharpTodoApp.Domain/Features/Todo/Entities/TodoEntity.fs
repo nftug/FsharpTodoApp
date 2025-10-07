@@ -2,6 +2,7 @@ namespace FsharpTodoApp.Domain.Features.Todo.Entities
 
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Domain.Common.Entities
+open FsharpTodoApp.Domain.Common.ValueObjects
 
 type TodoEntity =
     { Base: EntityBase
@@ -14,8 +15,16 @@ type TodoEntity =
 
 module TodoEntity =
     open FsToolkit.ErrorHandling
+    open FsharpTodoApp.Domain.Common.Errors
 
-    let tryCreate ctx (title, description, dueDate, assignee, reviewer) =
+    let tryCreate
+        (ctx: AuditContext)
+        (title: string,
+         description: string option,
+         dueDate: System.DateTime option,
+         assignee: UserInfo option,
+         reviewer: UserInfo option)
+        : Result<TodoEntity, AppError> =
         result {
             let! validBase = EntityBase.tryCreate ctx
             let! validTitle = title |> TodoTitle.tryCreate
@@ -34,7 +43,15 @@ module TodoEntity =
                   Reviewer = validReviewer }
         }
 
-    let tryUpdate ctx (title, description, dueDate, assignee, reviewer) this =
+    let tryUpdate
+        (ctx: AuditContext)
+        (title: string,
+         description: string option,
+         dueDate: System.DateTime option,
+         assignee: UserInfo option,
+         reviewer: UserInfo option)
+        (this: TodoEntity)
+        : Result<TodoEntity, AppError> =
         result {
             let! validBase = this.Base |> EntityBase.tryUpdate ctx
             let! validTitle = title |> TodoTitle.tryCreate
@@ -53,7 +70,11 @@ module TodoEntity =
                     Reviewer = validReviewer }
         }
 
-    let tryUpdateStatus ctx newStatus this =
+    let tryUpdateStatus
+        (ctx: AuditContext)
+        (newStatus: TodoStatusValue)
+        (this: TodoEntity)
+        : Result<TodoEntity, AppError> =
         result {
             let! validStatus = TodoStatus.tryUpdate ctx newStatus
             let! validBase = this.Base |> EntityBase.tryUpdate ctx
@@ -64,7 +85,7 @@ module TodoEntity =
                     Status = validStatus }
         }
 
-    let tryDelete ctx this =
+    let tryDelete (ctx: AuditContext) (this: TodoEntity) : Result<TodoEntity, AppError> =
         result {
             let! validBase = this.Base |> EntityBase.tryDelete ctx
             return { this with Base = validBase }

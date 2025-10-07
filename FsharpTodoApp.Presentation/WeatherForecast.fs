@@ -1,7 +1,6 @@
 namespace FsharpTodoApp.Presentation
 
 open System
-open FsharpTodoApp.Domain.Common.ValueObjects
 
 type WeatherForecast =
     { Date: DateTime

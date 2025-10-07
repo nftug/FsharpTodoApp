@@ -9,7 +9,7 @@ type TodoQueryDto =
       PageSize: int }
 
 module TodoQueryDto =
-    let ensureValidity (dto: TodoQueryDto) =
+    let ensureValidity (dto: TodoQueryDto) : TodoQueryDto =
         let page = if dto.Page < 1 then 1 else dto.Page
 
         let pageSize =

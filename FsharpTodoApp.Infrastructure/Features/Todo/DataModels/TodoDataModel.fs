@@ -6,7 +6,7 @@ open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Persistence.DataModels
 
 module TodoDataModel =
-    let dehydrate (dataModel: TodoDataModel) (domain: TodoEntity) =
+    let dehydrate (dataModel: TodoDataModel) (domain: TodoEntity) : unit =
         domain.Base |> DataModelBase.dehydrate dataModel
 
         dataModel.Title <- domain.Title |> TodoTitle.value

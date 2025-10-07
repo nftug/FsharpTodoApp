@@ -22,15 +22,19 @@ module TodoReviewer =
         | a, Some cur when a |> Actor.isAtLeast Manager || a |> Actor.isUser cur -> CanActReviewer
         | _ -> CannotActReviewer
 
-    let tryAssign ctx newReviewer =
+    let tryAssign (ctx: AuditContext) (newReviewer: UserInfo option) : Result<TodoReviewer, AppError> =
         match ctx.Actor, None, TodoReviewer newReviewer with
         | ReviewerBlocked -> Validation.error "Only manager and admin can assign other users."
         | _ -> Ok(TodoReviewer newReviewer)
 
-    let tryReassign ctx current newReviewer =
+    let tryReassign
+        (ctx: AuditContext)
+        (current: TodoReviewer)
+        (newReviewer: UserInfo option)
+        : Result<TodoReviewer, AppError> =
         match ctx.Actor, Some current, TodoReviewer newReviewer with
         | ReviewerBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
         | _ -> Ok(TodoReviewer newReviewer)
 
-    let hydrate reviewerName =
+    let hydrate (reviewerName: string option) : TodoReviewer =
         TodoReviewer(reviewerName |> Option.map (fun x -> { UserInfo.UserName = x }))
