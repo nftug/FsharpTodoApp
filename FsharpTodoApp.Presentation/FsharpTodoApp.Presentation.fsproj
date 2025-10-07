@@ -6,7 +6,9 @@
 
   <ItemGroup>
     <Compile Include="Services/OidcActorFactoryService.fs" />
+    <Compile Include="Utils/HttpContextUtils.fs" />
     <Compile Include="Compositions/PresentationServiceInjector.fs" />
+    <Compile Include="Endpoints/TodoHandlers.fs" />
 
     <Compile Include="WeatherForecast.fs" />
     <Compile Include="Controllers/WeatherForecastController.fs" />
@@ -22,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
+    <PackageReference Include="Giraffe" Version="6.0.0" />
   </ItemGroup>
 
 

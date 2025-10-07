@@ -11,6 +11,8 @@ open Microsoft.IdentityModel.Tokens
 open FsharpTodoApp.Domain.Compositions
 open FsharpTodoApp.Application.Compositions
 open FsharpTodoApp.Infrastructure.Compositions
+open Giraffe
+open FsharpTodoApp.Presentation.Endpoints
 
 module Program =
     open Microsoft.Extensions.Configuration
@@ -23,6 +25,7 @@ module Program =
         let configuration = builder.Configuration
 
         builder.Services.AddControllers()
+        builder.Services.AddGiraffe() |> ignore
 
         DomainServiceInjector.inject builder.Services
         |> ApplicationServiceInjector.inject
@@ -64,6 +67,7 @@ module Program =
 
         app.UseAuthentication()
         app.UseAuthorization()
+        app.UseGiraffe(choose [ TodoHandlers.routes ])
         app.MapControllers()
 
         app.Run()
