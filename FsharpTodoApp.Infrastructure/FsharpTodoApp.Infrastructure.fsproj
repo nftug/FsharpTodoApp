@@ -9,9 +9,9 @@
     <Compile Include="Persistence/Utils/ExprHelper.fs" />
     <Compile Include="Persistence/Utils/QueryExpressionHelper.fs" />
 
-    <Compile Include="Persistence/DataModels/DataModelBase.fs" />
-    <Compile Include="Features/User/DataModels/UserDataModel.fs" />
-    <Compile Include="Features/Todo/DataModels/TodoDataModel.fs" />
+    <Compile Include="Persistence/DataModels/DataModelBaseHelper.fs" />
+    <Compile Include="Features/User/DataModels/UserDataModelHelper.fs" />
+    <Compile Include="Features/Todo/DataModels/TodoDataModelHelper.fs" />
 
     <Compile Include="Persistence/Repositories/RepositoryHelper.fs" />
     <Compile Include="Features/Todo/Repositories/TodoRepositoryImpl.fs" />

@@ -9,10 +9,13 @@ open FsharpTodoApp.Persistence
 open FsharpTodoApp.Persistence.DataModels
 open FsharpTodoApp.Infrastructure.Persistence.Repositories
 open FsharpTodoApp.Infrastructure.Persistence.Utils
+open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 
 module TodoQueryServiceImpl =
-    let private getTodoById (ctx: AppDbContext) _ id =
+    let private getTodoById (ctx: AppDbContext) (actor: Actor option) id =
         ctx.Todos
+            .Where(TodoDataModelHelper.filterQueryExpression actor)
             .Where(fun x -> x.PublicId = id)
             .Select(fun e ->
                 { Id = e.PublicId
@@ -29,10 +32,12 @@ module TodoQueryServiceImpl =
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 
-    let private queryTodos (ctx: AppDbContext) _ (query: TodoQueryDto) =
+    let private queryTodos (ctx: AppDbContext) (actor: Actor option) (query: TodoQueryDto) =
         task {
             let queryable =
-                ctx.Todos.Where(fun x -> query.Status = None || x.Status = query.Status.Value)
+                ctx.Todos
+                    .Where(TodoDataModelHelper.filterQueryExpression actor)
+                    .Where(fun x -> query.Status = None || x.Status = query.Status.Value)
 
             let queryable =
                 match query.Search with

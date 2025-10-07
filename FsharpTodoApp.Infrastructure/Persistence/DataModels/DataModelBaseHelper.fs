@@ -4,7 +4,7 @@ open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Common.Entities
 open FsharpTodoApp.Persistence.DataModels
 
-module DataModelBase =
+module DataModelBaseHelper =
     let dehydrateDeletionState (dataModel: DataModelBase) (deletedAudit: DeletedAudit) : unit =
         DeletedAudit.value deletedAudit
         |> Option.iter (fun audit ->

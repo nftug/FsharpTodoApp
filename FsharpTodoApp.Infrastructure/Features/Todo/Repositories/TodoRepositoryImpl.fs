@@ -34,7 +34,7 @@ module TodoRepositoryImpl =
     let private saveTodo (ctx: AppDbContext) _ entity =
         { EntityBase = entity.Base
           Query = ctx.Todos
-          Dehydrate = fun d -> entity |> TodoDataModel.dehydrate d
+          Dehydrate = fun d -> entity |> TodoDataModelHelper.dehydrate d
           AfterSave = None }
         |> RepositoryHelper.save ctx
         |> Task.map (fun newBase -> { entity with Base = newBase })

@@ -31,7 +31,7 @@ module UserRepositoryImpl =
     let private saveUser (ctx: AppDbContext) _ entity =
         { EntityBase = entity.Base
           Query = ctx.Users
-          Dehydrate = fun d -> entity |> UserDataModel.dehydrate d
+          Dehydrate = fun d -> entity |> UserDataModelHelper.dehydrate d
           AfterSave = None }
         |> RepositoryHelper.save ctx
         |> Task.map (fun newBase -> { entity with Base = newBase })

@@ -8,14 +8,14 @@ type ActorRole =
 module ActorRole =
     open FsharpTodoApp.Domain.Common.Enums
 
-    let isAtLeast (role: ActorRole) (actorRole: ActorRole) : bool =
+    let isAtLeast (actorRole: ActorRole) (roles: ActorRole list) : bool =
         let toInt =
             function
             | User -> 0
             | Manager -> 1
             | Admin -> 2
 
-        toInt actorRole >= toInt role
+        roles |> List.exists (fun role -> toInt role >= toInt actorRole)
 
     let fromEnum (role: ActorRoleEnum) : ActorRole =
         match role with
