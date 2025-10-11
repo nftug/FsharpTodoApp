@@ -1,18 +1,17 @@
 namespace FsharpTodoApp.Domain.Features.Todo.ValueObjects
 
 open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Common.Errors
 
 type TodoAssignee = private TodoAssignee of UserInfo option
 
 module TodoAssignee =
-    open FsharpTodoApp.Domain.Common.Errors
-
     let value (TodoAssignee assignee: TodoAssignee) : UserInfo option = assignee
 
     let (|AssigneeAllowed|AssigneeBlocked|NoAssignee|) (actor, current, next) =
-        match actor, current, value next with
-        | _, None, None -> NoAssignee
-        | a, Some(TodoAssignee _), None when a |> Actor.isAtLeast Manager -> NoAssignee
+        match actor, value current, value next with
+        | _, None, None -> AssigneeAllowed
+        | a, Some _, None when a |> Actor.isAtLeast Manager -> NoAssignee
         | a, _, Some next when a |> Actor.isAtLeast Manager || a |> Actor.isUser next -> AssigneeAllowed
         | _ -> AssigneeBlocked
 
@@ -23,8 +22,8 @@ module TodoAssignee =
         | _ -> CannotActAssignee
 
     let tryAssign (ctx: AuditContext) (newAssignee: UserInfo option) : Result<TodoAssignee, AppError> =
-        match ctx.Actor, None, TodoAssignee newAssignee with
-        | AssigneeBlocked -> Validation.error "Only manager and admin can assign other users."
+        match ctx.Actor, TodoAssignee None, TodoAssignee newAssignee with
+        | AssigneeBlocked -> Validation.error "Only manager and admin can assign other assignees."
         | _ -> Ok(TodoAssignee newAssignee)
 
     let tryReassign
@@ -32,8 +31,8 @@ module TodoAssignee =
         (current: TodoAssignee)
         (newAssignee: UserInfo option)
         : Result<TodoAssignee, AppError> =
-        match ctx.Actor, Some current, TodoAssignee newAssignee with
-        | AssigneeBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
+        match ctx.Actor, current, TodoAssignee newAssignee with
+        | AssigneeBlocked -> Validation.error "Only manager and admin can reassign/unassign other assignees."
         | _ -> Ok(TodoAssignee newAssignee)
 
     let hydrate (assigneeName: string option) : TodoAssignee =

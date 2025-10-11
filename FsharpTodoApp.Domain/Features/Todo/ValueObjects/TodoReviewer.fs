@@ -1,18 +1,17 @@
 namespace FsharpTodoApp.Domain.Features.Todo.ValueObjects
 
 open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Common.Errors
 
 type TodoReviewer = private TodoReviewer of UserInfo option
 
 module TodoReviewer =
-    open FsharpTodoApp.Domain.Common.Errors
-
     let value (TodoReviewer reviewer) = reviewer
 
     let (|ReviewerAllowed|ReviewerBlocked|NoReviewer|) (actor, current, next) =
-        match actor, current, value next with
+        match actor, value current, value next with
         | _, None, None -> NoReviewer
-        | a, Some(TodoReviewer _), None when a |> Actor.isAtLeast Manager -> NoReviewer
+        | a, Some _, None when a |> Actor.isAtLeast Manager -> NoReviewer
         | a, _, Some next when a |> Actor.isAtLeast Manager || a |> Actor.isUser next -> ReviewerAllowed
         | _ -> ReviewerBlocked
 
@@ -23,8 +22,8 @@ module TodoReviewer =
         | _ -> CannotActReviewer
 
     let tryAssign (ctx: AuditContext) (newReviewer: UserInfo option) : Result<TodoReviewer, AppError> =
-        match ctx.Actor, None, TodoReviewer newReviewer with
-        | ReviewerBlocked -> Validation.error "Only manager and admin can assign other users."
+        match ctx.Actor, TodoReviewer None, TodoReviewer newReviewer with
+        | ReviewerBlocked -> Validation.error "Only manager and admin can assign other reviewers."
         | _ -> Ok(TodoReviewer newReviewer)
 
     let tryReassign
@@ -32,8 +31,8 @@ module TodoReviewer =
         (current: TodoReviewer)
         (newReviewer: UserInfo option)
         : Result<TodoReviewer, AppError> =
-        match ctx.Actor, Some current, TodoReviewer newReviewer with
-        | ReviewerBlocked -> Validation.error "Only manager and admin can reassign/unassign other users."
+        match ctx.Actor, current, TodoReviewer newReviewer with
+        | ReviewerBlocked -> Validation.error "Only manager and admin can reassign/unassign other reviewers."
         | _ -> Ok(TodoReviewer newReviewer)
 
     let hydrate (reviewerName: string option) : TodoReviewer =
