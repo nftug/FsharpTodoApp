@@ -10,13 +10,11 @@ open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.IdentityModel.Tokens
-open FsharpTodoApp.Domain.Compositions
-open FsharpTodoApp.Application.Compositions
-open FsharpTodoApp.Infrastructure.Compositions
 open Giraffe
 open FsharpTodoApp.Presentation.Endpoints
 
 module Program =
+    open FsharpTodoApp.Presentation.Compositions
     let exitCode = 0
 
     [<EntryPoint>]
@@ -28,14 +26,13 @@ module Program =
         builder.Services.AddControllers()
         builder.Services.AddGiraffe() |> ignore
 
-        DomainServiceInjector.inject builder.Services
-        |> ApplicationServiceInjector.inject
+        DomainComposition.inject builder.Services
+        |> ApplicationComposition.inject
         |> InfrastructureServiceInjector.inject configuration
-        |> PresentationServiceInjector.inject
+        |> PresentationComposition.inject
 
         let authSection = configuration.GetSection "Authentication"
         let authority = authSection.GetValue "Authority"
-        let audience = authSection.GetValue "Audience"
 
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -45,10 +42,9 @@ module Program =
 
                 options.TokenValidationParameters <-
                     TokenValidationParameters(
-                        ValidateIssuer = false,
-                        // ValidIssuer = authority,
+                        ValidateIssuer = true,
+                        ValidIssuer = authority,
                         ValidateAudience = false,
-                        // ValidAudience = audience,
                         NameClaimType = "preferred_username"
                     ))
         |> ignore

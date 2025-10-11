@@ -17,19 +17,12 @@
     <Compile Include="Features/Todo/QueryServices/TodoQueryServiceImpl.fs" />
 
     <Compile Include="Features/User/Services/UserReferenceServiceImpl.fs" />
-
-    <Compile Include="Compositions/InfrastructureServiceInjector.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FsharpTodoApp.Persistence\FsharpTodoApp.Persistence.csproj" />
     <ProjectReference Include="..\FsharpTodoApp.Domain\FsharpTodoApp.Domain.fsproj" />
     <ProjectReference Include="..\FsharpTodoApp.Application\FsharpTodoApp.Application.fsproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
   </ItemGroup>
 
 </Project>

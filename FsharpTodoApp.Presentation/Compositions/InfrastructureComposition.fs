@@ -1,18 +1,18 @@
-namespace FsharpTodoApp.Infrastructure.Compositions
+namespace FsharpTodoApp.Presentation.Compositions
+
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.EntityFrameworkCore
+open Microsoft.Extensions.Configuration
+open FsharpTodoApp.Domain.Features.User.Interfaces
+open FsharpTodoApp.Infrastructure.Features.User.Services
+open FsharpTodoApp.Infrastructure.Features.User.Repositories
+open FsharpTodoApp.Domain.Features.Todo.Interfaces
+open FsharpTodoApp.Infrastructure.Features.Todo.Repositories
+open FsharpTodoApp.Persistence
+open FsharpTodoApp.Application.Features.Todo.Interfaces
+open FsharpTodoApp.Infrastructure.Features.Todo.QueryServices
 
 module InfrastructureServiceInjector =
-    open Microsoft.Extensions.DependencyInjection
-    open Microsoft.EntityFrameworkCore
-    open Microsoft.Extensions.Configuration
-    open FsharpTodoApp.Domain.Features.User.Interfaces
-    open FsharpTodoApp.Infrastructure.Features.User.Services
-    open FsharpTodoApp.Infrastructure.Features.User.Repositories
-    open FsharpTodoApp.Domain.Features.Todo.Interfaces
-    open FsharpTodoApp.Infrastructure.Features.Todo.Repositories
-    open FsharpTodoApp.Persistence
-    open FsharpTodoApp.Application.Features.Todo.Interfaces
-    open FsharpTodoApp.Infrastructure.Features.Todo.QueryServices
-
     let inject (configuration: IConfiguration) (services: IServiceCollection) : IServiceCollection =
         services
             .AddDbContext<AppDbContext>(fun options ->

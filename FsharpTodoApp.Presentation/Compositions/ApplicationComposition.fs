@@ -1,16 +1,16 @@
-namespace FsharpTodoApp.Application.Compositions
+namespace FsharpTodoApp.Presentation.Compositions
 
-module ApplicationServiceInjector =
-    open Microsoft.Extensions.DependencyInjection
-    open FsharpTodoApp.Domain.Features.Todo.Interfaces
-    open FsharpTodoApp.Domain.Features.Todo.Services
-    open FsharpTodoApp.Domain.Features.User.Interfaces
-    open FsharpTodoApp.Application.Features.Todo.Commands
-    open FsharpTodoApp.Application.Features.User.Commands
-    open FsharpTodoApp.Domain.Features.User.Services
-    open FsharpTodoApp.Application.Features.Todo.Queries
-    open FsharpTodoApp.Application.Features.Todo.Interfaces
+open Microsoft.Extensions.DependencyInjection
+open FsharpTodoApp.Domain.Features.Todo.Interfaces
+open FsharpTodoApp.Domain.Features.Todo.Services
+open FsharpTodoApp.Domain.Features.User.Interfaces
+open FsharpTodoApp.Application.Features.Todo.Commands
+open FsharpTodoApp.Application.Features.User.Commands
+open FsharpTodoApp.Domain.Features.User.Services
+open FsharpTodoApp.Application.Features.Todo.Queries
+open FsharpTodoApp.Application.Features.Todo.Interfaces
 
+module ApplicationComposition =
     let inject (services: IServiceCollection) : IServiceCollection =
         services
             .AddScoped<GetOrCreateUser>(fun sp ->

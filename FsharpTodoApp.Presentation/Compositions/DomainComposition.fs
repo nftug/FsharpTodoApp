@@ -1,12 +1,12 @@
-namespace FsharpTodoApp.Domain.Compositions
+namespace FsharpTodoApp.Presentation.Compositions
 
-module DomainServiceInjector =
-    open Microsoft.Extensions.DependencyInjection
-    open FsharpTodoApp.Domain.Common.Services
-    open FsharpTodoApp.Domain.Features.Todo.Services
-    open FsharpTodoApp.Domain.Features.User.Interfaces
-    open FsharpTodoApp.Domain.Features.User.Services
+open Microsoft.Extensions.DependencyInjection
+open FsharpTodoApp.Domain.Common.Services
+open FsharpTodoApp.Domain.Features.Todo.Services
+open FsharpTodoApp.Domain.Features.User.Interfaces
+open FsharpTodoApp.Domain.Features.User.Services
 
+module DomainComposition =
     let inject (services: IServiceCollection) : IServiceCollection =
         services
             .AddSingleton<DateTimeProvider>(fun _ -> DateTimeProvider.create ())

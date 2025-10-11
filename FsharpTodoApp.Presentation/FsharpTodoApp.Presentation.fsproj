@@ -7,8 +7,13 @@
   <ItemGroup>
     <Compile Include="Services/OidcActorFactoryService.fs" />
     <Compile Include="Utils/HttpContextUtils.fs" />
-    <Compile Include="Compositions/PresentationServiceInjector.fs" />
+
     <Compile Include="Endpoints/TodoHandlers.fs" />
+
+    <Compile Include="Compositions/PresentationComposition.fs" />
+    <Compile Include="Compositions/InfrastructureComposition.fs" />
+    <Compile Include="Compositions/ApplicationComposition.fs" />
+    <Compile Include="Compositions/DomainComposition.fs" />
 
     <Compile Include="Program.fs" />
   </ItemGroup>
