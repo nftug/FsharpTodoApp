@@ -6,8 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Persistence/Utils/QueryExpressionHelper.fs" />
-
     <Compile Include="Persistence/DataModels/DataModelBaseHelper.fs" />
     <Compile Include="Features/User/DataModels/UserDataModelHelper.fs" />
     <Compile Include="Features/Todo/DataModels/TodoDataModelHelper.fs" />
