@@ -1,5 +1,6 @@
 using FsharpTodoApp.Domain.Common.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FsharpTodoApp.Persistence.DataModels;
 
@@ -22,6 +23,12 @@ public class UserDataModel : DataModelBase
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(r => Enum.Parse<ActorRoleEnum>(r)).ToArray());
+                    .Select(r => Enum.Parse<ActorRoleEnum>(r)).ToArray(),
+                new ValueComparer<ActorRoleEnum[]>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToArray())
+            );
+
     }
 }

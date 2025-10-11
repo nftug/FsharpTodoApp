@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FsharpTodoApp.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251003201506_InitialMigration")]
+    [Migration("20251011081253_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -118,6 +118,9 @@ namespace FsharpTodoApp.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PublicId")
+                        .IsUnique();
+
+                    b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);

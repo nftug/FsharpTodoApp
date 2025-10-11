@@ -28,7 +28,7 @@ module OidcActorFactoryService =
                 return None
             else
                 let userId =
-                    ctx.User.FindFirstValue "sub"
+                    ctx.User.FindFirstValue ClaimTypes.NameIdentifier
                     |> Option.ofObj
                     |> Option.bind (fun s ->
                         match System.Guid.TryParse s with

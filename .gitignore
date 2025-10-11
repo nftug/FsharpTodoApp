@@ -484,3 +484,8 @@ $RECYCLE.BIN/
 *.swp
 
 .VSCodeCounter
+
+# SQLite DB
+*.db
+*.db-shm
+*.db-wal

@@ -117,6 +117,9 @@ namespace FsharpTodoApp.Persistence.Migrations
                     b.HasIndex("PublicId")
                         .IsUnique();
 
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618

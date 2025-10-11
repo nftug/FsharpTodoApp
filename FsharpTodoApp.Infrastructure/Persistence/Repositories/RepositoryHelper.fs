@@ -52,7 +52,7 @@ module RepositoryHelper =
                 ctx.ChangeTracker.Clear()
 
                 return spec.EntityBase |> EntityBase.setDbId instance.Id
-            with ex ->
+            with e ->
                 do! tx.RollbackAsync()
-                raise ex
+                return! Task.FromException<EntityBase> e
         }

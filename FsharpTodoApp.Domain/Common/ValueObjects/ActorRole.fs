@@ -15,7 +15,7 @@ module ActorRole =
             | Manager -> 1
             | Admin -> 2
 
-        roles |> List.exists (fun role -> toInt role >= toInt actorRole)
+        roles |> Seq.exists (fun role -> toInt role >= toInt actorRole)
 
     let fromEnum (role: ActorRoleEnum) : ActorRole =
         match role with
@@ -29,3 +29,5 @@ module ActorRole =
         | User -> ActorRoleEnum.User
         | Manager -> ActorRoleEnum.Manager
         | Admin -> ActorRoleEnum.Admin
+
+    let fromEnums (roles: ActorRoleEnum seq) : ActorRole list = roles |> Seq.map fromEnum |> Seq.toList

@@ -34,15 +34,8 @@ module Program =
         |> PresentationServiceInjector.inject
 
         let authSection = configuration.GetSection "Authentication"
-
-        let getRequired (section: IConfigurationSection) name =
-            match section[name] with
-            | null
-            | "" -> failwithf "Configuration '%s' is required." name
-            | value -> value
-
-        let authority = getRequired authSection "Authority"
-        let audience = getRequired authSection "Audience"
+        let authority = authSection.GetValue "Authority"
+        let audience = authSection.GetValue "Audience"
 
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -52,10 +45,10 @@ module Program =
 
                 options.TokenValidationParameters <-
                     TokenValidationParameters(
-                        ValidateIssuer = true,
-                        ValidIssuer = authority,
-                        ValidateAudience = true,
-                        ValidAudience = audience,
+                        ValidateIssuer = false,
+                        // ValidIssuer = authority,
+                        ValidateAudience = false,
+                        // ValidAudience = audience,
                         NameClaimType = "preferred_username"
                     ))
         |> ignore

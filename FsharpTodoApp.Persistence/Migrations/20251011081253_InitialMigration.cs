@@ -69,6 +69,12 @@ namespace FsharpTodoApp.Persistence.Migrations
                 table: "Users",
                 column: "PublicId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_UserName",
+                table: "Users",
+                column: "UserName",
+                unique: true);
         }
 
         /// <inheritdoc />
