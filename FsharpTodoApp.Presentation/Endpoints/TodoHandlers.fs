@@ -83,12 +83,12 @@ module TodoHandlers =
             [ subRoute
                   "/api/todos"
                   (choose
-                      [ GET >=> queryTodosHandler
-                        POST >=> createTodoHandler
-                        routef "/%O/status" (fun (todoId: Guid) -> PATCH >=> updateTodoStatusHandler todoId)
+                      [ routef "/%O/status" (fun (todoId: Guid) -> PATCH >=> updateTodoStatusHandler todoId)
                         routef "/%O" (fun (todoId: Guid) ->
                             choose
                                 [ GET >=> getTodoDetailsHandler todoId
                                   PUT >=> updateTodoHandler todoId
-                                  DELETE >=> deleteTodoHandler todoId ]) ])
+                                  DELETE >=> deleteTodoHandler todoId ])
+                        GET >=> queryTodosHandler
+                        POST >=> createTodoHandler ])
               fun next ctx -> next ctx ]

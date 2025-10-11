@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Persistence/Utils/ExprHelper.fs" />
     <Compile Include="Persistence/Utils/QueryExpressionHelper.fs" />
 
     <Compile Include="Persistence/DataModels/DataModelBaseHelper.fs" />

@@ -12,10 +12,10 @@ type TodoDetailsResponseDto =
       Status: TodoStatusEnum
       AssigneeUserName: string option
       ReviewerUserName: string option
-      CreatedByUserName: string
       CreatedAt: DateTime
-      UpdatedByUserName: string option
-      UpdatedAt: DateTime option }
+      CreatedByUserName: string
+      UpdatedAt: DateTime option
+      UpdatedByUserName: string option }
 
 type TodoListItemResponseDto =
     { Id: Guid
@@ -25,7 +25,7 @@ type TodoListItemResponseDto =
       AssigneeUserName: string option
       ReviewerUserName: string option }
 
-type TodoPaginatedResponseDto = TodoPaginatedResponseDto of PaginatedResponseDto<TodoListItemResponseDto>
+type TodoPaginatedResponseDto = PaginatedResponseDto<TodoListItemResponseDto>
 
 module TodoPaginatedResponseDto =
     let create
@@ -34,4 +34,4 @@ module TodoPaginatedResponseDto =
         (page: int)
         (pageSize: int)
         : TodoPaginatedResponseDto =
-        TodoPaginatedResponseDto(PaginatedResponseDto.create items totalCount page pageSize)
+        PaginatedResponseDto.create items totalCount page pageSize

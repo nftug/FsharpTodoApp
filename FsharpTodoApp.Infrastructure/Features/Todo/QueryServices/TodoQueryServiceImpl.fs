@@ -6,50 +6,43 @@ open FsToolkit.ErrorHandling
 open FsharpTodoApp.Application.Features.Todo.Dtos
 open FsharpTodoApp.Application.Features.Todo.Interfaces
 open FsharpTodoApp.Persistence
-open FsharpTodoApp.Persistence.DataModels
-open FsharpTodoApp.Infrastructure.Persistence.Repositories
-open FsharpTodoApp.Infrastructure.Persistence.Utils
 open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 
 module TodoQueryServiceImpl =
     let private getTodoById (ctx: AppDbContext) (actor: Actor option) id =
-        ctx.Todos
-            .Where(TodoDataModelHelper.filterQueryExpression actor)
+        (TodoDataModelHelper.applyFilter ctx.Todos actor)
             .Where(fun x -> x.PublicId = id)
             .Select(fun e ->
                 { Id = e.PublicId
                   Title = e.Title
-                  Description = e.Description |> Option.ofObj
-                  DueDate = e.DueDate |> Option.ofNullable
+                  Description = Option.ofObj e.Description
+                  DueDate = Option.ofNullable e.DueDate
                   Status = e.Status
-                  AssigneeUserName = e.Assignee |> Option.ofObj
-                  ReviewerUserName = e.Reviewer |> Option.ofObj
+                  AssigneeUserName = Option.ofObj e.Assignee
+                  ReviewerUserName = Option.ofObj e.Reviewer
                   CreatedAt = e.CreatedAt
                   CreatedByUserName = e.CreatedBy
-                  UpdatedAt = e.UpdatedAt |> Option.ofNullable
-                  UpdatedByUserName = e.UpdatedBy |> Option.ofObj })
+                  UpdatedAt = Option.ofNullable e.UpdatedAt
+                  UpdatedByUserName = Option.ofObj e.UpdatedBy })
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 
     let private queryTodos (ctx: AppDbContext) (actor: Actor option) (query: TodoQueryDto) =
         task {
             let queryable =
-                ctx.Todos
-                    .Where(TodoDataModelHelper.filterQueryExpression actor)
+                (TodoDataModelHelper.applyFilter ctx.Todos actor)
                     .Where(fun x -> query.Status = None || x.Status = query.Status.Value)
 
             let queryable =
                 match query.Search with
                 | None -> queryable
                 | Some search ->
-                    queryable.Where(
-                        QueryExpressionHelper.buildCaseInsensitiveContains
-                            ctx
-                            [ ExprHelper.toExpression <@ fun (t: TodoDataModel) -> t.Title @>
-                              ExprHelper.toExpression <@ fun (t: TodoDataModel) -> t.Description @> ]
-                            search
-                    )
+                    let lowerSearch = search.ToLower()
+
+                    queryable.Where(fun t ->
+                        t.Title.ToLower().Contains lowerSearch
+                        || t.Description.ToLower().Contains lowerSearch)
 
             let! totalCount = queryable.CountAsync()
 
@@ -61,10 +54,10 @@ module TodoQueryServiceImpl =
                     .Select(fun e ->
                         { Id = e.PublicId
                           Title = e.Title
-                          DueDate = e.DueDate |> Option.ofNullable
+                          DueDate = Option.ofNullable e.DueDate
                           Status = e.Status
-                          AssigneeUserName = e.Assignee |> Option.ofObj
-                          ReviewerUserName = e.Reviewer |> Option.ofObj })
+                          AssigneeUserName = Option.ofObj e.Assignee
+                          ReviewerUserName = Option.ofObj e.Reviewer })
                     .ToListAsync()
                 |> Task.map Seq.toList
 

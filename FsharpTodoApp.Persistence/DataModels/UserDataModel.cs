@@ -29,6 +29,5 @@ public class UserDataModel : DataModelBase
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToArray())
             );
-
     }
 }

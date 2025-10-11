@@ -4,10 +4,8 @@ open FsharpTodoApp.Infrastructure.Persistence.DataModels
 open FsharpTodoApp.Domain.Features.Todo.Entities
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Persistence.DataModels
-open System.Linq.Expressions
-open System
 open FsharpTodoApp.Domain.Common.ValueObjects
-open FsharpTodoApp.Infrastructure.Persistence.Repositories
+open System.Linq
 
 module TodoDataModelHelper =
     let dehydrate (dataModel: TodoDataModel) (domain: TodoEntity) : unit =
@@ -20,12 +18,12 @@ module TodoDataModelHelper =
         dataModel.Assignee <- domain.Assignee |> TodoAssignee.value |> Option.map _.UserName |> Option.defaultValue null
         dataModel.Reviewer <- domain.Reviewer |> TodoReviewer.value |> Option.map _.UserName |> Option.defaultValue null
 
-    let filterQueryExpression (actor: Actor option): Expression<Func<TodoDataModel, bool>> =
-        ExprHelper.toExpression <@ fun (t: TodoDataModel) ->
-            match actor with
-            | Some a ->
-                a.Roles |> ActorRole.isAtLeast Admin
+    let applyFilter (query: IQueryable<TodoDataModel>) (actor: Actor option) : IQueryable<TodoDataModel> =
+        match actor with
+        | Some a ->
+            query.Where(fun t ->
+                ActorRole.isAtLeast Admin a.Roles
                 || t.CreatedBy = a.UserInfo.UserName
                 || t.Assignee = a.UserInfo.UserName
-                || t.Reviewer = a.UserInfo.UserName
-            | None -> false @>
+                || t.Reviewer = a.UserInfo.UserName)
+        | None -> query.Where(fun _ -> false)

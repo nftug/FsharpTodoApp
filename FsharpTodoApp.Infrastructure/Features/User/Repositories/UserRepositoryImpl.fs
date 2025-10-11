@@ -1,30 +1,30 @@
 namespace FsharpTodoApp.Infrastructure.Features.User.Repositories
 
-module UserRepositoryImpl =
-    open System.Linq
-    open Microsoft.EntityFrameworkCore
-    open FsharpTodoApp.Domain.Features.User.Entities
-    open FsharpTodoApp.Domain.Common.Entities
-    open FsToolkit.ErrorHandling
-    open FsharpTodoApp.Infrastructure.Persistence.Repositories
-    open FsharpTodoApp.Infrastructure.Features.User.DataModels
-    open FsharpTodoApp.Domain.Features.User.Interfaces
-    open FsharpTodoApp.Persistence
-    open FsharpTodoApp.Domain.Common.ValueObjects
+open System.Linq
+open Microsoft.EntityFrameworkCore
+open FsharpTodoApp.Domain.Features.User.Entities
+open FsToolkit.ErrorHandling
+open FsharpTodoApp.Infrastructure.Persistence.Repositories
+open FsharpTodoApp.Infrastructure.Features.User.DataModels
+open FsharpTodoApp.Domain.Features.User.Interfaces
+open FsharpTodoApp.Persistence
+open FsharpTodoApp.Domain.Common.Entities
+open FsharpTodoApp.Domain.Common.ValueObjects
 
+module UserRepositoryImpl =
     let private getUserByUserName (ctx: AppDbContext) _ userName =
         ctx.Users
             .Where(fun x -> x.UserName = userName)
-            .Select(fun e ->
+            .Select(fun x ->
                 { Base =
                     EntityBase.hydrate
-                        (e.Id, e.PublicId)
-                        (e.CreatedAt, e.CreatedBy)
-                        (e.UpdatedAt |> Option.ofNullable, e.UpdatedBy |> Option.ofObj)
-                        (e.DeletedAt |> Option.ofNullable, e.DeletedBy |> Option.ofObj)
-                  UserName = e.UserName
-                  FullName = e.FullName |> Option.ofObj
-                  Roles = e.Roles |> Array.toList |> List.map ActorRole.fromEnum })
+                        (x.Id, x.PublicId)
+                        (x.CreatedAt, x.CreatedBy)
+                        (Option.ofNullable x.UpdatedAt, Option.ofObj x.UpdatedBy)
+                        (Option.ofNullable x.DeletedAt, Option.ofObj x.DeletedBy)
+                  UserName = x.UserName
+                  FullName = Option.ofObj x.FullName
+                  Roles = ActorRole.fromEnums x.Roles })
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 

@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
-    <PackageReference Include="Giraffe" Version="6.0.0" />
+    <PackageReference Include="Giraffe" Version="7.0.2" />
   </ItemGroup>
 
 
