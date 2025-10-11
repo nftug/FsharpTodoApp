@@ -4,30 +4,34 @@ open System.Linq
 open Microsoft.EntityFrameworkCore
 open FsharpTodoApp.Domain.Features.Todo.Entities
 open FsharpTodoApp.Domain.Features.Todo.Interfaces
-open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Infrastructure.Persistence.Repositories
 open FsharpTodoApp.Infrastructure.Features.Todo.DataModels
 open FsharpTodoApp.Domain.Common.Entities
 open FsToolkit.ErrorHandling
 open FsharpTodoApp.Persistence
+open FsharpTodoApp.Domain.Common.ValueObjects
+open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 
 module TodoRepositoryImpl =
     let private getTodoById (ctx: AppDbContext) _ id =
         ctx.Todos
             .Where(fun x -> x.PublicId = id)
             .Select(fun x ->
-                { Base =
-                    EntityBase.hydrate
-                        (x.Id, x.PublicId)
-                        (x.CreatedAt, x.CreatedBy)
-                        (Option.ofNullable x.UpdatedAt, Option.ofObj x.UpdatedBy)
-                        (Option.ofNullable x.DeletedAt, Option.ofObj x.DeletedBy)
-                  Title = TodoTitle.hydrate x.Title
-                  Description = TodoDescription.hydrate (Option.ofObj x.Description)
-                  DueDate = TodoDueDate.hydrate (Option.ofNullable x.DueDate)
-                  Status = TodoStatus.hydrate x.Status
-                  Assignee = TodoAssignee.hydrate (Option.ofObj x.Assignee)
-                  Reviewer = TodoReviewer.hydrate (Option.ofObj x.Reviewer) })
+                TodoEntity.hydrate (
+                    EntityBase.hydrate (
+                        x.Id,
+                        x.PublicId,
+                        CreatedAudit.hydrate (x.CreatedAt, x.CreatedBy),
+                        UpdatedAudit.hydrate (Option.ofNullable x.UpdatedAt, Option.ofObj x.UpdatedBy),
+                        DeletedAudit.hydrate (Option.ofNullable x.DeletedAt, Option.ofObj x.DeletedBy)
+                    ),
+                    TodoTitle.hydrate x.Title,
+                    TodoDescription.hydrate (Option.ofObj x.Description),
+                    TodoDueDate.hydrate (Option.ofNullable x.DueDate),
+                    TodoStatus.hydrate x.Status,
+                    TodoAssignee.hydrate (Option.ofObj x.Assignee),
+                    TodoReviewer.hydrate (Option.ofObj x.Reviewer)
+                ))
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 

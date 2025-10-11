@@ -52,12 +52,14 @@ module EntityBase =
     let setDbId (dbId: int64) (this: EntityBase) : EntityBase = { this with IdSet.DbId = dbId }
 
     let hydrate
-        (dbId: int64, publicId: Guid)
-        (createdAt: DateTime, createdBy: string)
-        (updatedAt: DateTime option, updatedBy: string option)
-        (deletedAt: DateTime option, deletedBy: string option)
-        : EntityBase =
+        (
+            dbId: int64,
+            publicId: Guid,
+            createdAudit: CreatedAudit,
+            updatedAudit: UpdatedAudit,
+            deletedAudit: DeletedAudit
+        ) : EntityBase =
         { IdSet = { DbId = dbId; PublicId = publicId }
-          CreatedAudit = CreatedAudit.hydrate (createdAt, createdBy)
-          UpdatedAudit = UpdatedAudit.hydrate (updatedAt, updatedBy)
-          DeletedAudit = DeletedAudit.hydrate (deletedAt, deletedBy) }
+          CreatedAudit = createdAudit
+          UpdatedAudit = updatedAudit
+          DeletedAudit = deletedAudit }

@@ -3,6 +3,7 @@ namespace FsharpTodoApp.Domain.Features.User.Entities
 open FsharpTodoApp.Domain.Common.Entities
 open FsharpTodoApp.Domain.Common.ValueObjects
 open FsharpTodoApp.Domain.Common.Errors
+open FsToolkit.ErrorHandling
 
 type UserEntity =
     { Base: EntityBase
@@ -11,7 +12,17 @@ type UserEntity =
       Roles: ActorRole list }
 
 module UserEntity =
-    open FsToolkit.ErrorHandling
+    let hydrate
+        (
+            entityBase: EntityBase,
+            username: string,
+            fullname: string option,
+            roles: ActorRole list
+        ) : UserEntity =
+        { Base = entityBase
+          UserName = username
+          FullName = fullname
+          Roles = roles }
 
     let tryCreate
         (ctx: AuditContext)

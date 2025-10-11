@@ -14,17 +14,19 @@ module TodoQueryServiceImpl =
         (TodoDataModelHelper.applyFilter ctx.Todos actor)
             .Where(fun x -> x.PublicId = id)
             .Select(fun e ->
-                { Id = e.PublicId
-                  Title = e.Title
-                  Description = Option.ofObj e.Description
-                  DueDate = Option.ofNullable e.DueDate
-                  Status = e.Status
-                  AssigneeUserName = Option.ofObj e.Assignee
-                  ReviewerUserName = Option.ofObj e.Reviewer
-                  CreatedAt = e.CreatedAt
-                  CreatedByUserName = e.CreatedBy
-                  UpdatedAt = Option.ofNullable e.UpdatedAt
-                  UpdatedByUserName = Option.ofObj e.UpdatedBy })
+                new TodoDetailsResponseDto(
+                    e.PublicId,
+                    e.Title,
+                    Option.ofObj e.Description,
+                    Option.ofNullable e.DueDate,
+                    e.Status,
+                    Option.ofObj e.Assignee,
+                    Option.ofObj e.Reviewer,
+                    e.CreatedAt,
+                    e.CreatedBy,
+                    Option.ofNullable e.UpdatedAt,
+                    Option.ofObj e.UpdatedBy
+                ))
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 
@@ -52,12 +54,14 @@ module TodoQueryServiceImpl =
                     .Skip(query.PageSize * (query.Page - 1))
                     .Take(query.PageSize)
                     .Select(fun e ->
-                        { Id = e.PublicId
-                          Title = e.Title
-                          DueDate = Option.ofNullable e.DueDate
-                          Status = e.Status
-                          AssigneeUserName = Option.ofObj e.Assignee
-                          ReviewerUserName = Option.ofObj e.Reviewer })
+                        new TodoListItemResponseDto(
+                            e.PublicId,
+                            e.Title,
+                            Option.ofNullable e.DueDate,
+                            e.Status,
+                            Option.ofObj e.Assignee,
+                            Option.ofObj e.Reviewer
+                        ))
                     .ToListAsync()
                 |> Task.map Seq.toList
 

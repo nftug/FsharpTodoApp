@@ -16,15 +16,18 @@ module UserRepositoryImpl =
         ctx.Users
             .Where(fun x -> x.UserName = userName)
             .Select(fun x ->
-                { Base =
-                    EntityBase.hydrate
-                        (x.Id, x.PublicId)
-                        (x.CreatedAt, x.CreatedBy)
-                        (Option.ofNullable x.UpdatedAt, Option.ofObj x.UpdatedBy)
-                        (Option.ofNullable x.DeletedAt, Option.ofObj x.DeletedBy)
-                  UserName = x.UserName
-                  FullName = Option.ofObj x.FullName
-                  Roles = ActorRole.fromEnums x.Roles })
+                UserEntity.hydrate (
+                    EntityBase.hydrate (
+                        x.Id,
+                        x.PublicId,
+                        CreatedAudit.hydrate (x.CreatedAt, x.CreatedBy),
+                        UpdatedAudit.hydrate (Option.ofNullable x.UpdatedAt, Option.ofObj x.UpdatedBy),
+                        DeletedAudit.hydrate (Option.ofNullable x.DeletedAt, Option.ofObj x.DeletedBy)
+                    ),
+                    x.UserName,
+                    Option.ofObj x.FullName,
+                    ActorRole.fromEnums x.Roles
+                ))
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
 

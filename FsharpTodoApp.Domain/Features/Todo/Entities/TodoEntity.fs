@@ -1,5 +1,7 @@
 namespace FsharpTodoApp.Domain.Features.Todo.Entities
 
+open FsToolkit.ErrorHandling
+open FsharpTodoApp.Domain.Common.Errors
 open FsharpTodoApp.Domain.Features.Todo.ValueObjects
 open FsharpTodoApp.Domain.Common.Entities
 open FsharpTodoApp.Domain.Common.ValueObjects
@@ -14,8 +16,23 @@ type TodoEntity =
       Reviewer: TodoReviewer }
 
 module TodoEntity =
-    open FsToolkit.ErrorHandling
-    open FsharpTodoApp.Domain.Common.Errors
+    let hydrate
+        (
+            entityBase: EntityBase,
+            title: TodoTitle,
+            description: TodoDescription,
+            dueDate: TodoDueDate,
+            status: TodoStatus,
+            assignee: TodoAssignee,
+            reviewer: TodoReviewer
+        ) : TodoEntity =
+        { Base = entityBase
+          Title = title
+          Description = description
+          DueDate = dueDate
+          Status = status
+          Assignee = assignee
+          Reviewer = reviewer }
 
     let tryCreate
         (ctx: AuditContext)
