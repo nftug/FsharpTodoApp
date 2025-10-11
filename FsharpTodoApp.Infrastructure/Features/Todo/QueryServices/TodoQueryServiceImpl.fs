@@ -3,6 +3,7 @@ namespace FsharpTodoApp.Infrastructure.Features.Todo.QueryServices
 open System.Linq
 open Microsoft.EntityFrameworkCore
 open FsToolkit.ErrorHandling
+open FsharpTodoApp.Application.Common.Dtos
 open FsharpTodoApp.Application.Features.Todo.Dtos
 open FsharpTodoApp.Application.Features.Todo.Interfaces
 open FsharpTodoApp.Persistence
@@ -14,18 +15,15 @@ module TodoQueryServiceImpl =
         (TodoDataModelHelper.applyFilter ctx.Todos actor)
             .Where(fun x -> x.PublicId = id)
             .Select(fun e ->
-                new TodoDetailsResponseDto(
+                TodoDetailsResponseDto(
                     e.PublicId,
+                    AuditDto(e.CreatedAt, e.CreatedBy, Option.ofNullable e.UpdatedAt, Option.ofObj e.UpdatedBy),
                     e.Title,
                     Option.ofObj e.Description,
                     Option.ofNullable e.DueDate,
                     e.Status,
                     Option.ofObj e.Assignee,
-                    Option.ofObj e.Reviewer,
-                    e.CreatedAt,
-                    e.CreatedBy,
-                    Option.ofNullable e.UpdatedAt,
-                    Option.ofObj e.UpdatedBy
+                    Option.ofObj e.Reviewer
                 ))
             .SingleOrDefaultAsync()
         |> Task.map Option.ofObj
@@ -54,8 +52,9 @@ module TodoQueryServiceImpl =
                     .Skip(query.PageSize * (query.Page - 1))
                     .Take(query.PageSize)
                     .Select(fun e ->
-                        new TodoListItemResponseDto(
+                        TodoListItemResponseDto(
                             e.PublicId,
+                            AuditDto(e.CreatedAt, e.CreatedBy, Option.ofNullable e.UpdatedAt, Option.ofObj e.UpdatedBy),
                             e.Title,
                             Option.ofNullable e.DueDate,
                             e.Status,
@@ -65,7 +64,7 @@ module TodoQueryServiceImpl =
                     .ToListAsync()
                 |> Task.map Seq.toList
 
-            return TodoPaginatedResponseDto.create results totalCount query.Page query.PageSize
+            return TodoPaginatedResponseDto(results, totalCount, query.Page, query.PageSize)
         }
 
     let create (ctx: AppDbContext) : TodoQueryService =

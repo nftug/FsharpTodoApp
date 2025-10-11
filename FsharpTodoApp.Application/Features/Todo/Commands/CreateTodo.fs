@@ -38,7 +38,7 @@ module CreateTodo =
 
             let! created =
                 repo.SaveTodo actor entity
-                |> Task.map (fun x -> Ok(x.Base |> ItemCreatedResponseDto.create))
+                |> Task.map (fun x -> Ok(ItemCreatedResponseDto x.Base.IdSet.PublicId))
 
             return created
         }

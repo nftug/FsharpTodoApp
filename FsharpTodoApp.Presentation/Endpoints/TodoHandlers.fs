@@ -89,6 +89,5 @@ module TodoHandlers =
                                 [ GET >=> getTodoDetailsHandler todoId
                                   PUT >=> updateTodoHandler todoId
                                   DELETE >=> deleteTodoHandler todoId ])
-                        GET >=> queryTodosHandler
-                        POST >=> createTodoHandler ])
+                        subRoute "/" (choose [ GET >=> queryTodosHandler; POST >=> createTodoHandler ]) ])
               fun next ctx -> next ctx ]

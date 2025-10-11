@@ -1,29 +1,20 @@
 namespace FsharpTodoApp.Application.Common.Dtos
 
-type ItemCreatedResponseDto = { ItemId: System.Guid }
+type ItemCreatedResponseDto(itemId) =
+    member val ItemId: System.Guid = itemId with get, set
 
-module ItemCreatedResponseDto =
-    open FsharpTodoApp.Domain.Common.Entities
+type AuditDto(createdAt, createdBy, updatedAt, updatedBy) =
+    member val CreatedAt: System.DateTime = createdAt with get, set
+    member val CreatedBy: string = createdBy with get, set
+    member val UpdatedAt: System.DateTime option = updatedAt with get, set
+    member val UpdatedBy: string option = updatedBy with get, set
 
-    let create entityBase = { ItemId = entityBase.IdSet.PublicId }
-
-type PaginatedResponseDto<'T> =
-    { Items: 'T list
-      TotalCount: int
-      PageSize: int
-      CurrentPage: int
-      TotalPages: int
-      HasNextPage: bool
-      HasPreviousPage: bool }
-
-module PaginatedResponseDto =
-    let create (items: 'T list) (totalCount: int) (currentPage: int) (pageSize: int) : PaginatedResponseDto<'T> =
-        let totalPages = (totalCount + pageSize - 1) / pageSize
-
-        { Items = items
-          TotalCount = totalCount
-          PageSize = pageSize
-          CurrentPage = currentPage
-          TotalPages = totalPages
-          HasNextPage = currentPage < totalPages
-          HasPreviousPage = currentPage > 1 }
+[<AbstractClass>]
+type PaginatedResponseDto<'T>(items: 'T list, totalCount: int, pageSize: int, currentPage: int) =
+    member val TotalCount: int = totalCount with get, set
+    member val PageSize: int = pageSize with get, set
+    member val CurrentPage: int = currentPage with get, set
+    member this.TotalPages: int = (this.TotalCount + this.PageSize - 1) / this.PageSize
+    member this.HasNextPage: bool = this.CurrentPage < this.TotalPages
+    member this.HasPreviousPage: bool = this.CurrentPage > 1
+    member val Items: 'T list = items with get, set
