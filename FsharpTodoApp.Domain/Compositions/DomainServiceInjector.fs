@@ -15,7 +15,8 @@ module DomainServiceInjector =
                 let userRef = sp.GetRequiredService<UserReferenceService>()
                 UserPolicyService.create datetime userRef)
             .AddScoped<TodoPolicyService>(fun sp ->
-                sp.GetRequiredService<DateTimeProvider>() |> TodoPolicyService.create)
+                let datetime = sp.GetRequiredService<DateTimeProvider>()
+                TodoPolicyService.create datetime)
         |> ignore
 
         services

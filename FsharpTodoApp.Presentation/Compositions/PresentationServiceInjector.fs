@@ -7,7 +7,8 @@ module PresentationServiceInjector =
 
     let inject (services: IServiceCollection) : IServiceCollection =
         services.AddScoped<OidcActorFactoryService>(fun sp ->
-            sp.GetRequiredService<GetOrCreateUser>() |> OidcActorFactoryService.create)
+            let getOrCreateUser = sp.GetRequiredService<GetOrCreateUser>()
+            OidcActorFactoryService.create getOrCreateUser)
         |> ignore
 
         services

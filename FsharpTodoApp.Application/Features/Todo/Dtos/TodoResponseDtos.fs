@@ -2,29 +2,30 @@ namespace FsharpTodoApp.Application.Features.Todo.Dtos
 
 open FsharpTodoApp.Domain.Features.Todo.Enums
 open FsharpTodoApp.Application.Common.Dtos
+open System
 
 type TodoDetailsResponseDto =
-    { Id: System.Guid
+    { Id: Guid
       Title: string
       Description: string option
-      DueDate: System.DateTime option
+      DueDate: DateTime option
       Status: TodoStatusEnum
       AssigneeUserName: string option
       ReviewerUserName: string option
       CreatedByUserName: string
-      CreatedAt: System.DateTime
+      CreatedAt: DateTime
       UpdatedByUserName: string option
-      UpdatedAt: System.DateTime option }
+      UpdatedAt: DateTime option }
 
 type TodoListItemResponseDto =
-    { Id: System.Guid
+    { Id: Guid
       Title: string
-      DueDate: System.DateTime option
+      DueDate: DateTime option
       Status: TodoStatusEnum
       AssigneeUserName: string option
       ReviewerUserName: string option }
 
-type TodoPaginatedResponseDto = PaginatedResponseDto<TodoListItemResponseDto>
+type TodoPaginatedResponseDto = TodoPaginatedResponseDto of PaginatedResponseDto<TodoListItemResponseDto>
 
 module TodoPaginatedResponseDto =
     let create
@@ -33,4 +34,4 @@ module TodoPaginatedResponseDto =
         (page: int)
         (pageSize: int)
         : TodoPaginatedResponseDto =
-        PaginatedResponseDto.create items totalCount page pageSize
+        TodoPaginatedResponseDto(PaginatedResponseDto.create items totalCount page pageSize)

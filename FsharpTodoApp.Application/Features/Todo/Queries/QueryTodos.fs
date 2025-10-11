@@ -10,8 +10,6 @@ type QueryTodos =
 module QueryTodos =
     open FsharpTodoApp.Application.Features.Todo.Interfaces
 
-    let private handle queryService (actor, queryDto) =
-        let queryDto = TodoQueryDto.ensureValidity queryDto
-        queryService.QueryTodos actor queryDto
+    let private handle queryService (actor, queryDto) = queryService.QueryTodos actor queryDto
 
     let create (queryService: TodoQueryService) : QueryTodos = { Handle = handle queryService }

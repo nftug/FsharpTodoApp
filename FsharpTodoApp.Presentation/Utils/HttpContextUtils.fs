@@ -28,6 +28,12 @@ module HttpContextUtils =
             | Error error -> return Error error
         }
 
+    let optionalActor (ctx: HttpContext) : Task<Result<Actor option, AppError>> =
+        task {
+            let factory = getService<OidcActorFactoryService> ctx
+            return! factory.Handle ctx
+        }
+
     let respondAppError (error: AppError) : HttpHandler =
         match error with
         | ValidationError message -> setStatusCode 400 >=> json {| error = message |}
@@ -42,6 +48,15 @@ module HttpContextUtils =
             task {
                 match result with
                 | Ok value -> return! successHandler value next ctx
+                | Error error -> return! respondAppError error next ctx
+            }
+
+    let handleOptionalResult (result: Result<'T option, AppError>) (successHandler: 'T -> HttpHandler) : HttpHandler =
+        fun next ctx ->
+            task {
+                match result with
+                | Ok(Some value) -> return! successHandler value next ctx
+                | Ok None -> return! noContent next ctx
                 | Error error -> return! respondAppError error next ctx
             }
 

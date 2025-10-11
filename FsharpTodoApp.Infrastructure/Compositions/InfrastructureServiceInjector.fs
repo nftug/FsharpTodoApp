@@ -22,10 +22,17 @@ module InfrastructureServiceInjector =
                 )
                 |> ignore)
             .AddScoped<UserReferenceService>(fun sp ->
-                sp.GetRequiredService<AppDbContext>() |> UserReferenceServiceImpl.create)
-            .AddScoped<UserRepository>(fun sp -> sp.GetRequiredService<AppDbContext>() |> UserRepositoryImpl.create)
-            .AddScoped<TodoRepository>(fun sp -> sp.GetRequiredService<AppDbContext>() |> TodoRepositoryImpl.create)
-            .AddScoped<TodoQueryService>(fun sp -> sp.GetRequiredService<AppDbContext>() |> TodoQueryServiceImpl.create)
+                let dbContext = sp.GetRequiredService<AppDbContext>()
+                UserReferenceServiceImpl.create dbContext)
+            .AddScoped<UserRepository>(fun sp ->
+                let dbContext = sp.GetRequiredService<AppDbContext>()
+                UserRepositoryImpl.create dbContext)
+            .AddScoped<TodoRepository>(fun sp ->
+                let dbContext = sp.GetRequiredService<AppDbContext>()
+                TodoRepositoryImpl.create dbContext)
+            .AddScoped<TodoQueryService>(fun sp ->
+                let dbContext = sp.GetRequiredService<AppDbContext>()
+                TodoQueryServiceImpl.create dbContext)
         |> ignore
 
         services

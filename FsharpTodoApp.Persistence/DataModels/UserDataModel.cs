@@ -14,6 +14,10 @@ public class UserDataModel : DataModelBase
         OnModelCreating<UserDataModel>(modelBuilder, "Users");
 
         modelBuilder.Entity<UserDataModel>()
+            .HasIndex(e => e.UserName)
+            .IsUnique();
+
+        modelBuilder.Entity<UserDataModel>()
             .Property(e => e.Roles)
             .HasConversion(
                 v => string.Join(',', v),

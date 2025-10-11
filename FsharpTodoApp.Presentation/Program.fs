@@ -5,6 +5,8 @@ namespace FsharpTodoApp.Presentation
 open System
 open Microsoft.AspNetCore.Authentication.JwtBearer
 open Microsoft.AspNetCore.Builder
+open Microsoft.EntityFrameworkCore
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.IdentityModel.Tokens
@@ -15,7 +17,6 @@ open Giraffe
 open FsharpTodoApp.Presentation.Endpoints
 
 module Program =
-    open Microsoft.Extensions.Configuration
     let exitCode = 0
 
     [<EntryPoint>]
@@ -62,6 +63,14 @@ module Program =
         builder.Services.AddAuthorization() |> ignore
 
         let app = builder.Build()
+
+        using (app.Services.CreateScope()) (fun scope ->
+            let services = scope.ServiceProvider
+
+            let dbContext =
+                services.GetRequiredService<FsharpTodoApp.Persistence.AppDbContext>()
+
+            dbContext.Database.Migrate())
 
         app.UseHttpsRedirection()
 

@@ -1,6 +1,5 @@
 using FsharpTodoApp.Domain.Features.Todo.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FsharpTodoApp.Persistence.DataModels;
 
@@ -19,8 +18,8 @@ public class TodoDataModel : DataModelBase
 
         modelBuilder.Entity<TodoDataModel>()
             .Property(e => e.Status)
-            .HasConversion(new ValueConverter<TodoStatusEnum, string>(
+            .HasConversion(
                 v => v.ToString(),
-                v => Enum.Parse<TodoStatusEnum>(v)));
+                v => Enum.Parse<TodoStatusEnum>(v));
     }
 }

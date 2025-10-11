@@ -27,9 +27,7 @@ module UserPolicyService =
                 |> TaskResult.requireNone (ValidationError "Username already exists")
                 |> TaskResult.ignore
 
-            return!
-                UserEntity.tryCreate ctx (username, userId, fullname, roles)
-                |> TaskResult.ofResult
+            return! UserEntity.tryCreate ctx (username, userId, fullname, roles)
         }
 
     let private buildUpdated datetime actor (fullname, roles) this =
